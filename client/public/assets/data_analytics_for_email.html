@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Email Marketing Dashboard</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@babel/standalone@7.24.7/babel.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    body { background: linear-gradient(135deg, #f3f4f6, #e5e7eb); }
+    .chart-container { position: relative; height: 300px; }
+  </style>
+</head>
+<body>
+  <div id="root"></div>
+
+  <script type="text/babel">
+    const { useState, useEffect, useRef } = React;
+
+    function App() {
+      const [data, setData] = useState(null);
+      const [loading, setLoading] = useState(true);
+      const [error, setError] = useState(null);
+
+      useEffect(() => {
+        fetch('./email_dashboard_data.json')
+          .then(response => {
+            if (!response.ok) throw new Error('데이터를 불러오지 못했습니다.');
+            return response.json();
+          })
+          .then(data => {
+            setData(data);
+            setLoading(false);
+          })
+          .catch(err => {
+            setError(err.message);
+            setLoading(false);
+          });
+      }, []);
+
+      if (loading) return <div className="text-center text-2xl mt-10">Loading...</div>;
+      if (error) return <div className="text-center text-2xl mt-10 text-red-600">Error: {error}</div>;
+      if (!data) return null;
+
+      return (
+        <div className="container mx-auto p-6 max-w-7xl">
+          <h1 className="text-4xl font-extrabold mb-8 text-center text-indigo-800">Email Marketing Insights Dashboard</h1>
+          <SummaryCards data={data} />
+          <TopCampaigns data={data} /> {/* Top Campaigns 추가 */}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8">
+            <div className="bg-white p-6 rounded-xl shadow-lg">
+              <h2 className="text-xl font-semibold mb-4 text-gray-700">Weekly Trends</h2>
+              <div className="chart-container"><DualAxisLineChart data={data.weeklyData} /></div>
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow-lg">
+              <h2 className="text-xl font-semibold mb-4 text-gray-700">Monthly Click Rates</h2>
+              <div className="chart-container"><BarChart data={data.monthlyData} /></div>
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow-lg">
+              <h2 className="text-xl font-semibold mb-4 text-gray-700">Top Keywords</h2>
+              <div className="chart-container"><KeywordBarChart data={data.campaignData} /></div>
+            </div>
+          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+            <div className="bg-white p-6 rounded-xl shadow-lg">
+              <h2 className="text-xl font-semibold mb-4 text-gray-700">Campaign Type Breakdown</h2>
+              <div className="chart-container"><PieChart data={data.campaignData} /></div>
+            </div>
+            <div className="bg-white p-6 rounded-xl shadow-lg">
+              <h2 className="text-xl font-semibold mb-4 text-gray-700">Open vs Click Rates</h2>
+              <div className="chart-container"><ScatterChart data={data.campaignData} /></div>
+            </div>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-lg mb-8">
+            <h2 className="text-xl font-semibold mb-4 text-gray-700">Subscriber Trends</h2>
+            <div className="chart-container"><SubscriberChart data={data.weeklyData} /></div>
+          </div>
+          <div className="bg-white p-6 rounded-xl shadow-lg">
+            <h2 className="text-xl font-semibold mb-4 text-gray-700">Campaign Details</h2>
+            <CampaignTable data={data.campaignData} />
+          </div>
+        </div>
+      );
+    }
+
+    function SummaryCards({ data }) {
+      const totalSent = parseInt(data.summary["건수"]["발송성공"]);
+      const avgOpenRate = parseFloat(data.summary["비율"]["오픈"]);
+      const avgClickRate = parseFloat(data.summary["비율"]["클릭"]);
+      const totalNetSubscribers = data.weeklyData.netSubscribers.reduce((a, b) => a + b, 0);
+
+      return (
+        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-indigo-50 p-6 rounded-xl shadow-md">
+            <h3 className="text-gray-600">Total Sent</h3>
+            <p className="text-3xl font-bold text-indigo-700">{totalSent.toLocaleString()}</p>
+            <p className="text-sm text-gray-500">Over 2 years</p>
+          </div>
+          <div className="bg-green-50 p-6 rounded-xl shadow-md">
+            <h3 className="text-gray-600">Avg Open Rate</h3>
+            <p className="text-3xl font-bold text-green-700">{avgOpenRate}%</p>
+            <p className="text-sm text-gray-500">High on Tuesdays</p>
+          </div>
+          <div className="bg-purple-50 p-6 rounded-xl shadow-md">
+            <h3 className="text-gray-600">Avg Click Rate</h3>
+            <p className="text-3xl font-bold text-purple-700">{avgClickRate}%</p>
+            <p className="text-sm text-gray-500">Action-Driven</p>
+          </div>
+          <div className="bg-yellow-50 p-6 rounded-xl shadow-md">
+            <h3 className="text-gray-600">Net Subscribers</h3>
+            <p className="text-3xl font-bold text-yellow-700">{totalNetSubscribers}</p>
+            <p className="text-sm text-gray-500">Growth Impact</p>
+          </div>
+        </div>
+      );
+    }
+
+    function TopCampaigns({ data }) {
+      const topCampaigns = data.campaignData
+        .sort((a, b) => b.clickRate - a.clickRate)
+        .slice(0, 3);
+
+      return (
+        <div className="bg-white p-6 rounded-xl shadow-lg mb-8">
+          <h2 className="text-xl font-semibold mb-4 text-gray-700">Top 3 Campaigns by Click Rate</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {topCampaigns.map((c, i) => (
+              <div key={i} className="bg-blue-50 p-4 rounded-lg shadow-md">
+                <h3 className="text-gray-600 font-semibold truncate">{c.title}</h3>
+                <p className="text-xl font-bold text-blue-700">Click Rate: {c.clickRate}%</p>
+                <p className="text-sm text-gray-500">Open Rate: {c.openRate}%</p>
+                <p className="text-sm text-gray-500">Date: {c.date}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      );
+    }
+
+    function DualAxisLineChart({ data }) {
+      const chartRef = useRef(null);
+      useEffect(() => {
+        const filteredIndices = data.sent.map((val, idx) => val > 0 ? idx : -1).filter(idx => idx !== -1);
+        const filteredDates = filteredIndices.map(idx => data.dates[idx]);
+        const filteredSent = filteredIndices.map(idx => data.sent[idx]);
+        const filteredOpenRates = filteredIndices.map(idx => data.openRates[idx]);
+
+        const ctx = chartRef.current.getContext('2d');
+        const chart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: filteredDates,
+            datasets: [
+              { label: 'Sent', data: filteredSent, yAxisID: 'y1', borderColor: '#4f46e5', fill: false, tension: 0.1 },
+              { label: 'Open Rate (%)', data: filteredOpenRates, yAxisID: 'y2', borderColor: '#10b981', fill: false, tension: 0.1 }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y1: { position: 'left', beginAtZero: true, title: { display: true, text: 'Sent' } },
+              y2: { position: 'right', beginAtZero: true, max: 50, title: { display: true, text: 'Open Rate (%)' } }
+            }
+          }
+        });
+        return () => chart.destroy();
+      }, [data]);
+      return <canvas ref={chartRef}></canvas>;
+    }
+
+    function BarChart({ data }) {
+      const chartRef = useRef(null);
+      useEffect(() => {
+        const ctx = chartRef.current.getContext('2d');
+        const chart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: data.months,
+            datasets: [{
+              label: 'Click Rate (%)',
+              data: data.clickRates,
+              backgroundColor: '#8b5cf6'
+            }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+        return () => chart.destroy();
+      }, [data]);
+      return <canvas ref={chartRef}></canvas>;
+    }
+
+    function PieChart({ data }) {
+      const chartRef = useRef(null);
+      useEffect(() => {
+        const typeStats = data.reduce((acc, curr) => {
+          acc[curr.type] = (acc[curr.type] || 0) + curr.openRate;
+          return acc;
+        }, {});
+        const ctx = chartRef.current.getContext('2d');
+        const chart = new Chart(ctx, {
+          type: 'pie',
+          data: {
+            labels: Object.keys(typeStats),
+            datasets: [{
+              data: Object.values(typeStats),
+              backgroundColor: ['#f97316', '#3b82f6']
+            }]
+          },
+          options: { responsive: true, maintainAspectRatio: false }
+        });
+        return () => chart.destroy();
+      }, [data]);
+      return <canvas ref={chartRef}></canvas>;
+    }
+
+    function ScatterChart({ data }) {
+      const chartRef = useRef(null);
+      useEffect(() => {
+        const ctx = chartRef.current.getContext('2d');
+        const chart = new Chart(ctx, {
+          type: 'scatter',
+          data: {
+            datasets: [{
+              label: 'Campaigns',
+              data: data.map(c => ({ x: c.openRate, y: c.clickRate })),
+              backgroundColor: '#ef4444',
+              pointRadius: 6,
+              pointHoverRadius: 8
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              x: { title: { display: true, text: 'Open Rate (%)' } },
+              y: { title: { display: true, text: 'Click Rate (%)' } }
+            }
+          }
+        });
+        return () => chart.destroy();
+      }, [data]);
+      return <canvas ref={chartRef}></canvas>;
+    }
+
+    function KeywordBarChart({ data }) {
+      const chartRef = useRef(null);
+      useEffect(() => {
+        const keywords = data.flatMap(c => c.title.split(/[\s\[\]👀]+/).filter(w => w.length > 2 && w !== '디지큐'))
+          .reduce((acc, word) => { acc[word] = (acc[word] || 0) + 1; return acc; }, {});
+        const sortedKeywords = Object.entries(keywords)
+          .sort((a, b) => b[1] - a[1])
+          .slice(0, 10);
+        const ctx = chartRef.current.getContext('2d');
+        const chart = new Chart(ctx, {
+          type: 'bar',
+          data: {
+            labels: sortedKeywords.map(([word]) => word),
+            datasets: [{
+              label: 'Keyword Frequency',
+              data: sortedKeywords.map(([, count]) => count),
+              backgroundColor: '#3b82f6'
+            }]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: { y: { beginAtZero: true, title: { display: true, text: 'Frequency' } } }
+          }
+        });
+        return () => chart.destroy();
+      }, [data]);
+      return <canvas ref={chartRef}></canvas>;
+    }
+
+    function SubscriberChart({ data }) {
+      const chartRef = useRef(null);
+      useEffect(() => {
+        const maxNetSubscribers = 200;
+        const minNetSubscribers = -200;
+        const filteredNetSubscribers = data.netSubscribers.map(val => 
+          (val > maxNetSubscribers || val < minNetSubscribers) ? 0 : val
+        );
+        const initialSubscribers = data.subscribers[0];
+        const cumulativeSubscribers = filteredNetSubscribers.reduce((acc, curr, idx) => {
+          acc.push(idx === 0 ? initialSubscribers : acc[idx - 1] + curr);
+          return acc;
+        }, []);
+
+        const ctx = chartRef.current.getContext('2d');
+        const chart = new Chart(ctx, {
+          type: 'line',
+          data: {
+            labels: data.dates,
+            datasets: [
+              { 
+                label: 'Cumulative Subscribers', 
+                data: cumulativeSubscribers, 
+                yAxisID: 'y1', 
+                borderColor: '#eab308', 
+                fill: false, 
+                tension: 0.1 
+              },
+              { 
+                label: 'Net Subscribers', 
+                data: filteredNetSubscribers, 
+                yAxisID: 'y2', 
+                borderColor: '#22c55e', 
+                fill: false, 
+                tension: 0.1 
+              }
+            ]
+          },
+          options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            scales: {
+              y1: { 
+                position: 'left', 
+                title: { display: true, text: 'Cumulative Subscribers' }, 
+                min: 2000, 
+                max: 5000 
+              },
+              y2: { 
+                position: 'right', 
+                title: { display: true, text: 'Net Subscribers' }, 
+                min: -300, 
+                max: 300 
+              }
+            }
+          }
+        });
+        return () => chart.destroy();
+      }, [data]);
+      return <canvas ref={chartRef}></canvas>;
+    }
+
+    function CampaignTable({ data }) {
+      const [filter, setFilter] = useState('');
+      const [typeFilter, setTypeFilter] = useState('All');
+      const [dateStart, setDateStart] = useState('');
+      const [dateEnd, setDateEnd] = useState('');
+      const [openRateMin, setOpenRateMin] = useState('');
+      const [openRateMax, setOpenRateMax] = useState('');
+      const [clickRateMin, setClickRateMin] = useState('');
+      const [clickRateMax, setClickRateMax] = useState('');
+      const [sortField, setSortField] = useState('openRate');
+      const [sortOrder, setSortOrder] = useState('desc');
+
+      const filteredData = data.filter(c => {
+        const date = new Date(c.date);
+        const start = dateStart ? new Date(dateStart) : null;
+        const end = dateEnd ? new Date(dateEnd) : null;
+        const openMin = openRateMin ? parseFloat(openRateMin) : -Infinity;
+        const openMax = openRateMax ? parseFloat(openRateMax) : Infinity;
+        const clickMin = clickRateMin ? parseFloat(clickRateMin) : -Infinity;
+        const clickMax = clickRateMax ? parseFloat(clickRateMax) : Infinity;
+
+        return (
+          c.title.toLowerCase().includes(filter.toLowerCase()) &&
+          (typeFilter === 'All' || c.type === typeFilter) &&
+          (!start || date >= start) &&
+          (!end || date <= end) &&
+          c.openRate >= openMin && c.openRate <= openMax &&
+          c.clickRate >= clickMin && c.clickRate <= clickMax
+        );
+      }).sort((a, b) => {
+        const valA = a[sortField], valB = b[sortField];
+        return sortOrder === 'desc' ? valB - valA : valA - valB;
+      });
+
+      const toggleSort = (field) => {
+        if (sortField === field) setSortOrder(sortOrder === 'desc' ? 'asc' : 'desc');
+        else { setSortField(field); setSortOrder('desc'); }
+      };
+
+      return (
+        <div>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <input
+              type="text"
+              placeholder="Filter by title..."
+              value={filter}
+              onChange={(e) => setFilter(e.target.value)}
+              className="p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <select
+              value={typeFilter}
+              onChange={(e) => setTypeFilter(e.target.value)}
+              className="p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            >
+              <option value="All">All Types</option>
+              <option value="일반">일반</option>
+              <option value="뉴스레터">뉴스레터</option>
+            </select>
+            <input
+              type="date"
+              value={dateStart}
+              onChange={(e) => setDateStart(e.target.value)}
+              className="p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <input
+              type="date"
+              value={dateEnd}
+              onChange={(e) => setDateEnd(e.target.value)}
+              className="p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <input
+              type="number"
+              placeholder="Min Open Rate"
+              value={openRateMin}
+              onChange={(e) => setOpenRateMin(e.target.value)}
+              className="p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <input
+              type="number"
+              placeholder="Max Open Rate"
+              value={openRateMax}
+              onChange={(e) => setOpenRateMax(e.target.value)}
+              className="p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <input
+              type="number"
+              placeholder="Min Click Rate"
+              value={clickRateMin}
+              onChange={(e) => setClickRateMin(e.target.value)}
+              className="p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+            <input
+              type="number"
+              placeholder="Max Click Rate"
+              value={clickRateMax}
+              onChange={(e) => setClickRateMax(e.target.value)}
+              className="p-2 border rounded w-full focus:outline-none focus:ring-2 focus:ring-indigo-500"
+            />
+          </div>
+          <div className="overflow-x-auto">
+            <table className="w-full text-left">
+              <thead className="bg-indigo-100">
+                <tr>
+                  <th className="p-3 cursor-pointer" onClick={() => toggleSort('title')}>Title {sortField === 'title' && (sortOrder === 'desc' ? '↓' : '↑')}</th>
+                  <th className="p-3 cursor-pointer" onClick={() => toggleSort('date')}>Date {sortField === 'date' && (sortOrder === 'desc' ? '↓' : '↑')}</th>
+                  <th className="p-3 cursor-pointer" onClick={() => toggleSort('sent')}>Sent {sortField === 'sent' && (sortOrder === 'desc' ? '↓' : '↑')}</th>
+                  <th className="p-3 cursor-pointer" onClick={() => toggleSort('openRate')}>Open Rate {sortField === 'openRate' && (sortOrder === 'desc' ? '↓' : '↑')}</th>
+                  <th className="p-3 cursor-pointer" onClick={() => toggleSort('clickRate')}>Click Rate {sortField === 'clickRate' && (sortOrder === 'desc' ? '↓' : '↑')}</th>
+                  <th className="p-3 cursor-pointer" onClick={() => toggleSort('netSubscribers')}>Net Subscribers {sortField === 'netSubscribers' && (sortOrder === 'desc' ? '↓' : '↑')}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {filteredData.map((c, i) => (
+                  <tr key={i} className="border-t hover:bg-gray-50">
+                    <td className="p-3">{c.title}</td>
+                    <td className="p-3">{c.date}</td>
+                    <td className="p-3">{c.sent.toLocaleString()}</td>
+                    <td className="p-3">{c.openRate}%</td>
+                    <td className="p-3">{c.clickRate}%</td>
+                    <td className="p-3">{c.netSubscribers}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<App />);
+  </script>
+</body>
+</html>
