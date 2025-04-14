@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useCallback } from 'react';
+import React, { useEffect, useState, useCallback, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
@@ -15,6 +15,20 @@ const ProjectDetail: React.FC = () => {
   const [showSwipeGuide, setShowSwipeGuide] = useState(true);
 
   const project = projects.find(p => p.id === Number(id)) as Project | undefined;
+
+  // 이미지 경로를 WebP로 변경하고 모든 이미지를 하나의 배열로 합치기
+  const allImages = useMemo(() => {
+    if (!project) return [];
+    
+    const mainImage = project.image.replace(/\.(png|jpg|jpeg)$/i, '.webp');
+    const additionalImages = project.additionalImages?.map(img => 
+      img.replace(/\.(png|jpg|jpeg)$/i, '.webp')
+    ) || [];
+
+    return project.isComputer 
+      ? [mainImage, ...additionalImages]  // 코드 프로젝트는 메인 이미지 먼저
+      : [...additionalImages, mainImage]; // 디자인 프로젝트는 추가 이미지 먼저
+  }, [project]);
 
   // 스와이프 핸들러
   const swipeHandlers = useSwipeable({
@@ -44,16 +58,16 @@ const ProjectDetail: React.FC = () => {
   }, []);
 
   const goToPrevious = useCallback(() => {
-    if (project) {
-      setCurrentImageIndex(prev => (prev - 1 + project.images.length) % project.images.length);
+    if (project && project.additionalImages) {
+      setCurrentImageIndex(prev => (prev - 1 + allImages.length) % allImages.length);
     }
-  }, [project]);
+  }, [project, allImages]);
 
   const goToNext = useCallback(() => {
-    if (project) {
-      setCurrentImageIndex(prev => (prev + 1) % project.images.length);
+    if (project && project.additionalImages) {
+      setCurrentImageIndex(prev => (prev + 1) % allImages.length);
     }
-  }, [project]);
+  }, [project, allImages]);
 
   const handleKeyDown = useCallback((e: KeyboardEvent) => {
     if (e.key === 'Escape') {
@@ -77,26 +91,8 @@ const ProjectDetail: React.FC = () => {
   }, [id]);
 
   if (!project) {
-    return (
-      <div className="min-h-screen flex items-center justify-center text-gray-500 text-lg">
-        Project not found.
-      </div>
-    );
+    return <div>Project not found</div>;
   }
-
-  const folderPath = project.image.substring(0, project.image.lastIndexOf('/'));
-  const projectImages = project.imageFiles?.map(file => `${folderPath}/${file}`) || [];
-
-  // 이미지 경로를 WebP로 변경
-  const mainImage = project.image.replace(/\.(png|jpg|jpeg)$/i, '.webp');
-  const additionalImages = project.additionalImages?.map(img => 
-    img.replace(/\.(png|jpg|jpeg)$/i, '.webp')
-  ) || [];
-
-  // 모든 이미지를 하나의 배열로 합치기
-  const allImages = project.isComputer 
-    ? [mainImage, ...additionalImages]  // 코드 프로젝트는 메인 이미지 먼저
-    : [...additionalImages, mainImage]; // 디자인 프로젝트는 추가 이미지 먼저
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
