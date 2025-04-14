@@ -1,7 +1,16 @@
 import React from 'react';
+import { Helmet } from 'react-helmet-async';
+
 
 const DataAnalysis: React.FC = () => {
   return (
+    <>
+    <Helmet>
+      <title>Sangjin Lee | Data Analysis</title>
+      <meta name="description" content="Explore Sangjin Lee's data analysis projects showcasing insights and visualizations." />
+      <meta property="og:title" content="Sangjin Lee | Data Analysis" />
+      <meta property="og:description" content="Explore data analysis projects by Sangjin Lee." />
+    </Helmet>
     <div className="min-h-screen bg-white pt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
@@ -61,6 +70,7 @@ const DataAnalysis: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

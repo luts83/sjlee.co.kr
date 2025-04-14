@@ -1,5 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
+
 
 const About: React.FC = () => {
   const fadeInUp = {
@@ -18,6 +20,13 @@ const About: React.FC = () => {
   };
 
   return (
+    <>
+    <Helmet>
+      <title>Sangjin Lee | About</title>
+      <meta name="description" content="About Sangjin Lee, a creative architect and digital strategist." />
+      <meta property="og:title" content="Sangjin Lee | About" />
+      <meta property="og:description" content="Learn more about Sangjin Lee, a creative architect and digital strategist." />
+    </Helmet>
     <div className="pt-20 px-6 min-h-screen bg-white">
       <div className="max-w-3xl mx-auto">
         <motion.h1
@@ -414,56 +423,16 @@ const About: React.FC = () => {
             <h3 className="text-sm font-bold uppercase tracking-wider mb-4 text-gray-600">
               Interests
             </h3>
-            <p className="text-gray-600 mb-12">
+            <p className="text-gray-600">
               Retail Management, Retail Design, Data Analytics, Digital Marketing, Smart Buildings, IoT, Cycling
             </p>
+            <li>
+              
+            </li>
           </motion.div>
           {/* Signature Section */}
-<motion.div
-  initial="hidden"
-  animate="visible"
-  variants={fadeInUp}
-  className="mt-24 pt-12 border-t border-gray-200 text-center relative pb-20"
->
-  <p className="text-gray-500 mb-6 text-sm">
-    Thanks for stopping by — let's connect.
-  </p>
+<motion.div>
 
-  <button
-  onClick={() => {
-    const email = "lee.sanggean@gmail.com";
-
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(email)
-        .then(() => alert("📋 Email copied to clipboard!"))
-        .catch(() => fallbackCopy(email));
-    } else {
-      fallbackCopy(email);
-    }
-
-    function fallbackCopy(text: string) {
-      const textArea = document.createElement("textarea");
-      textArea.value = text;
-      textArea.style.position = "fixed"; // avoid scrolling to bottom
-      textArea.style.left = "-9999px";
-      document.body.appendChild(textArea);
-      textArea.focus();
-      textArea.select();
-
-      try {
-        document.execCommand("copy");
-        alert("📋 Email copied to clipboard!");
-      } catch (err) {
-        prompt("Copy email:", email);
-      }
-
-      document.body.removeChild(textArea);
-    }
-  }}
-  className="text-gray-400 hover:text-black transition-colors text-sm underline"
->
-  lee.sanggean@gmail.com
-</button>
 
 
   {/* Scroll to top round button */}
@@ -479,6 +448,7 @@ const About: React.FC = () => {
         </motion.div>
       </div>
     </div>
+    </>
   );
 };
 

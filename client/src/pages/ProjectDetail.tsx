@@ -2,7 +2,10 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { useSwipeable } from 'react-swipeable';
+import { LazyLoadImage } from 'react-lazy-load-image-component';
+import 'react-lazy-load-image-component/src/effects/blur.css';
 import { projects } from '../data/projects';
+
 
 interface Project {
   id: number;
@@ -26,7 +29,7 @@ const ProjectDetail: React.FC = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [showSwipeGuide, setShowSwipeGuide] = useState(true);
 
-  const project = projects.find(p => p.id === Number(id));
+  const project = projects.find(p => p.id === Number(id)) as Project | undefined;
 
   // 스와이프 핸들러
   const swipeHandlers = useSwipeable({
@@ -176,12 +179,12 @@ const ProjectDetail: React.FC = () => {
               className="relative cursor-pointer group"
               onClick={() => openModal(index)}
             >
-              <img
+              <LazyLoadImage
                 src={image}
                 alt={`${project.title} - ${index + 1}`}
+                effect="blur"
                 className="w-full h-auto rounded-lg shadow-lg object-contain group-hover:opacity-90 transition-opacity duration-300"
-                loading="lazy"
-                style={{ maxHeight: '80vh' }}
+                placeholderSrc={image}
               />
               <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 <div className="bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg">
@@ -296,10 +299,12 @@ const ProjectDetail: React.FC = () => {
                 </svg>
               </button>
               <div className="relative">
-                <img
+                <LazyLoadImage
                   src={allImages[currentImage]}
                   alt={`${project.title} - ${currentImage + 1}`}
                   className="w-full h-auto max-h-[90vh] object-contain"
+                  effect="blur"
+                  placeholderSrc={allImages[currentImage]}
                 />
                 <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 px-4 py-2 rounded-lg">
                   {currentImage + 1} / {allImages.length}

@@ -1,5 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { Helmet } from 'react-helmet-async';
+
 
 const Home: React.FC = () => {
   const [splitPosition, setSplitPosition] = useState(0.5);
@@ -86,6 +88,14 @@ const Home: React.FC = () => {
   const translateAmount = (0.5 - splitPosition) * 200;
 
   return (
+    <>
+    <Helmet>
+      <title>Sangjin Lee | Creative Architect & Digital Strategist</title>
+      <meta name="description" content="Explore Sangjin Lee’s portfolio that bridges architecture, digital design, and data." />
+      <meta property="og:title" content="Sangjin Lee | Creative Architect & Digital Strategist" />
+      <meta property="og:description" content="Portfolio covering architecture, digital platforms, and analytics." />
+      <meta property="og:url" content="https://sjlee.co.kr/" />
+    </Helmet>
     <div
       ref={containerRef}
       className="h-screen w-full flex items-center justify-center bg-white relative overflow-hidden touch-none"
@@ -172,6 +182,7 @@ const Home: React.FC = () => {
         </p>
       </div>
     </div>
+    </>
   );
 };
 

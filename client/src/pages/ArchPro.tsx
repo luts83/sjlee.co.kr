@@ -1,7 +1,14 @@
 import React from 'react';
-
+import { Helmet } from 'react-helmet-async';
 const ArchPro: React.FC = () => {
   return (
+    <>
+    <Helmet>
+      <title>Sangjin Lee | Arch Pro</title>
+      <meta name="description" content="Explore Sangjin Lee's professional architecture portfolio." />
+      <meta property="og:title" content="Sangjin Lee | Arch Pro" />
+      <meta property="og:description" content="Explore professional architecture projects by Sangjin Lee." />
+    </Helmet>
     <div className="min-h-screen bg-white pt-20">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="text-center mb-12">
@@ -43,6 +50,7 @@ const ArchPro: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

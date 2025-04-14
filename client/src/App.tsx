@@ -4,7 +4,6 @@ import Header from './components/Header';
 import Home from './pages/Home';
 import About from './pages/About';
 import Portfolio from './pages/Portfolio';
-import Blog from './pages/Blog';
 import Contact from './pages/Contact';
 import ArchStudent from './pages/ArchStudent';
 import ArchPro from './pages/ArchPro';
@@ -14,6 +13,9 @@ import CountryLogs from './pages/logs/CountryLogs';
 import LogsGlobe from './pages/logs/LogsGlobe';
 import SearchResult from "./pages/SearchResult";
 import 'leaflet/dist/leaflet.css';
+import Footer from './components/Footer';
+import { HelmetProvider } from 'react-helmet-async';
+import { Helmet } from 'react-helmet-async';
 
 
 
@@ -21,13 +23,24 @@ import 'leaflet/dist/leaflet.css';
 
 const App: React.FC = () => {
   return (
+    <HelmetProvider>
     <Router>
+      <Helmet>
+  <html lang="en" />
+  <title>Sangjin Lee Portfolio</title>
+  <meta name="description" content="Portfolio site of Sangjin Lee — architecturally trained, digitally fluent, and commercially strategic." />
+  <meta property="og:title" content="Sangjin Lee Portfolio" />
+  <meta property="og:description" content="Explore architecture, digital, and data works by Sangjin Lee." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="/images/og/main-og-image.png" />
+  <meta property="og:url" content="https://sjlee.co.kr" />
+  <meta name="twitter:card" content="summary_large_image" />
+</Helmet>
       <Header />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/about" element={<About />} />
         <Route path="/portfolio" element={<Portfolio />} />
-        <Route path="/blog" element={<Blog />} />
         <Route path="/contact" element={<Contact />} />
         <Route path="/portfolio/arch-student" element={<ArchStudent />} />
         <Route path="/portfolio/arch-pro" element={<ArchPro />} />
@@ -40,10 +53,10 @@ const App: React.FC = () => {
         <Route path="/portfolio/code/:id" element={<ProjectDetail />} />
         <Route path="/portfolio/arch-pro/:id" element={<ProjectDetail />} />
 
-
-
       </Routes>
+      <Footer />
     </Router>
+    </HelmetProvider>
   );
 };
 

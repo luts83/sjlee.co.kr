@@ -4,6 +4,7 @@ import { PhotoProvider, PhotoView } from "react-photo-view";
 import "react-photo-view/dist/react-photo-view.css";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import { Helmet } from 'react-helmet-async';
 
 import {
   MapContainer,
@@ -84,6 +85,13 @@ const CountryLogs: React.FC = () => {
   });
 
   return (
+    <>
+    <Helmet>
+      <title>Sangjin Lee | Country Logs</title>
+      <meta name="description" content="Explore Sangjin Lee's travel logs by country." />
+      <meta property="og:title" content="Sangjin Lee | Country Logs" />
+      <meta property="og:description" content="Explore travel logs by country by Sangjin Lee." />
+    </Helmet>
     <div className="px-6 pt-20 text-white bg-black min-h-screen">
       <button
         onClick={() => navigate('/logs')}
@@ -189,6 +197,7 @@ const CountryLogs: React.FC = () => {
         </PhotoProvider>
       )}
     </div>
+    </>
   );
 };
 

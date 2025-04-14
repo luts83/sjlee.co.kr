@@ -1,5 +1,7 @@
 import React, { useState } from 'react';
 import toast, { Toaster } from 'react-hot-toast';
+import { Helmet } from 'react-helmet-async';
+
 
 interface ContactForm {
   name: string;
@@ -59,6 +61,13 @@ const Contact: React.FC = () => {
   };
 
   return (
+    <>
+    <Helmet>
+      <title>Sangjin Lee | Contact</title>
+      <meta name="description" content="Contact Sangjin Lee for inquiries or collaborations." />
+      <meta property="og:title" content="Sangjin Lee | Contact" />
+      <meta property="og:description" content="Contact Sangjin Lee for inquiries or collaborations." />
+    </Helmet>
     <div className="pt-20 px-6 pb-20 min-h-screen bg-white text-gray-600">
       <Toaster position="top-right" reverseOrder={false} />
 
@@ -196,6 +205,7 @@ const Contact: React.FC = () => {
         </div>
       </div>
     </div>
+    </>
   );
 };
 

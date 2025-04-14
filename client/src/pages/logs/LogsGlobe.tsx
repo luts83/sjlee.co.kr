@@ -1,6 +1,8 @@
 import React, { useEffect, useRef, useState } from "react";
 import Globe from "react-globe.gl";
 import { useNavigate } from "react-router-dom";
+import { Helmet } from 'react-helmet-async';
+
 
 interface CountryMarker {
   country: string;
@@ -86,6 +88,13 @@ const LogsGlobe: React.FC = () => {
   }
 
   return (
+    <>
+    <Helmet>
+      <title>Sangjin Lee | Logs Globe</title>
+      <meta name="description" content="Explore Sangjin Lee's travel logs on the globe." />
+      <meta property="og:title" content="Sangjin Lee | Logs Globe" />
+      <meta property="og:description" content="Explore travel logs on the globe by Sangjin Lee." />
+    </Helmet>
     <div className="w-screen h-screen bg-black overflow-hidden">
       <Globe
         ref={globeRef}
@@ -106,6 +115,7 @@ const LogsGlobe: React.FC = () => {
         }}
       />
     </div>
+    </>
   );
 };
 

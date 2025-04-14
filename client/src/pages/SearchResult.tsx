@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { projects } from '../data/projects';
+import { Helmet } from 'react-helmet-async';
+
 
 interface LogItem {
   src: string;
@@ -72,6 +74,13 @@ const SearchResult: React.FC = () => {
   }, [query]);
 
   return (
+    <>
+    <Helmet>
+      <title>Sangjin Lee | Search Results</title>
+      <meta name="description" content="Search results for Sangjin Lee's portfolio." />
+      <meta property="og:title" content="Sangjin Lee | Search Results" />
+      <meta property="og:description" content="Search results for Sangjin Lee's portfolio." />
+    </Helmet>
     <div className="pt-20 px-6 min-h-screen bg-white text-gray-700">
       <div className="max-w-5xl mx-auto">
         <h1 className="text-2xl font-semibold mb-6">
@@ -123,6 +132,7 @@ const SearchResult: React.FC = () => {
         )}
       </div>
     </div>
+    </>
   );
 };
 

@@ -1,6 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Helmet } from 'react-helmet-async';
+
 
 const ArchStudent: React.FC = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -110,6 +112,13 @@ const ArchStudent: React.FC = () => {
   };
 
   return (
+    <>
+    <Helmet>
+      <title>Sangjin Lee | Arch Student</title>
+      <meta name="description" content="Explore Sangjin Lee's architecture student portfolio." />
+      <meta property="og:title" content="Sangjin Lee | Arch Student" />
+      <meta property="og:description" content="Explore architecture student projects by Sangjin Lee." />
+    </Helmet>
     <div 
       ref={containerRef}
       className="h-screen w-screen bg-white overflow-hidden relative overflow-y-hidden"
@@ -184,6 +193,7 @@ const ArchStudent: React.FC = () => {
         </div>
       </motion.div>
     </div>
+    </>
   );
 };
 
