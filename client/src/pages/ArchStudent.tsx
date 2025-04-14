@@ -1,4 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const ArchStudent: React.FC = () => {
@@ -12,6 +13,7 @@ const ArchStudent: React.FC = () => {
   const touchStartX = useRef(0);
   const touchEndX = useRef(0);
   const isTouchingNav = useRef(false);
+  const navigate = useNavigate();
 
   const imageFiles = Array.from({ length: totalPages }, (_, i) => 
     `/assets/portfolio-images/portfolio-2003-2013_페이지_${String(i + 1).padStart(2, '0')}.png`
@@ -115,6 +117,14 @@ const ArchStudent: React.FC = () => {
       onTouchMove={handleTouchMove}
       onTouchEnd={handleTouchEnd}
     >
+      {/* Back Button */}
+      <button
+        onClick={() => navigate('/portfolio')}
+        className="absolute top-28 left-6 z-50 text-black bg-transparent"
+      >
+        ← Back to Projects
+      </button>
+
       <AnimatePresence custom={direction}>
         <motion.div
           key={currentPage}

@@ -11,21 +11,27 @@ export interface Project {
   tags: string[];
   isStudent: boolean;
   isComputer: boolean;
+  additionalImages?: string[];
 }
 
 export const projects: Project[] = [
   {
     id: 1,
-    title: "Samsung EO Retail Guide Pilot Store",
+    title: "Samsung Electronics EO Retail Guide Pilot Store",
     category: "Guideline",
     date: "2023",
     location: "London, United Kingdom",
     description: "Design and construction of Samsung Electronics EO Retail Guide Pilot Store",
-    image: "/images/arch-pro/01_SS_EO_Retail_Guide_Pilot_Store/04.png",
+    image: "/images/optimized-images/arch-pro/01_SS_EO_Retail_Guide_Pilot_Store/04.webp",
     imageFiles: ["03.png", "04.png", "05.png", "06.png"],
     tags: ["Retail Strategy", "Store Opening Coordination", "Guideline Development", "Project Reporting"],
     isStudent: false,
-    isComputer: false
+    isComputer: false,
+    additionalImages: [
+      "/images/optimized-images/arch-pro/01_SS_EO_Retail_Guide_Pilot_Store/03.webp",
+      "/images/optimized-images/arch-pro/01_SS_EO_Retail_Guide_Pilot_Store/05.webp",
+      "/images/optimized-images/arch-pro/01_SS_EO_Retail_Guide_Pilot_Store/06.webp"
+    ]
   },
   {
     id: 2,
@@ -34,11 +40,15 @@ export const projects: Project[] = [
     date: "2022",
     location: "Durban, South Africa",
     description: "Design and construction of LG Event booth at East Coast Radio Show",
-    image: "/images/arch-pro/02_LG_Event_East_Coast_Radio_Show/08.png",
+    image: "/images/optimized-images/arch-pro/02_LG_Event_East_Coast_Radio_Show/08.webp",
     imageFiles: ["07.png", "08.png", "09.png"],
     tags: ["Event Planning", "Timeline Management", "Vendor Management", "On-site Coordination"],
     isStudent: false,
-    isComputer: false
+    isComputer: false,
+    additionalImages: [
+      "/images/optimized-images/arch-pro/02_LG_Event_East_Coast_Radio_Show/07.webp",
+      "/images/optimized-images/arch-pro/02_LG_Event_East_Coast_Radio_Show/09.webp"
+    ]
   },
   {
     id: 3,
@@ -47,11 +57,17 @@ export const projects: Project[] = [
     date: "2022",
     location: "Johannesburg, South Africa",
     description: "Design and construction of LG Shop-in-Shop at Hirschs Waterfall",
-    image: "/images/arch-pro/03_LG_Shop-in-Shop_Hirschs_Waterfall/11.png",
+    image: "/images/optimized-images/arch-pro/03_LG_Shop-in-Shop_Hirschs_Waterfall/11.webp",
     imageFiles: ["10.png", "11.png", "12.png", "13.png", "14.png"],
     tags: ["Shop-in-Shop", "Construction Scheduling", "Vendor Management", "Fixture Installation"],
     isStudent: false,
-    isComputer: false
+    isComputer: false,
+    additionalImages: [
+      "/images/optimized-images/arch-pro/03_LG_Shop-in-Shop_Hirschs_Waterfall/10.webp",
+      "/images/optimized-images/arch-pro/03_LG_Shop-in-Shop_Hirschs_Waterfall/12.webp",
+      "/images/optimized-images/arch-pro/03_LG_Shop-in-Shop_Hirschs_Waterfall/13.webp",
+      "/images/optimized-images/arch-pro/03_LG_Shop-in-Shop_Hirschs_Waterfall/14.webp"
+    ]
   },
   {
     id: 4,
@@ -60,11 +76,15 @@ export const projects: Project[] = [
     date: "2021",
     location: "Pretoria, South Africa",
     description: "Design and construction of LG Shop-in-Shop at Stax Woodlands",
-    image: "/images/arch-pro/04_LG_Shop-in-Shop_Stax_Woodlands/16.png",
+    image: "/images/optimized-images/arch-pro/04_LG_Shop-in-Shop_Stax_Woodlands/16.webp",
     imageFiles: ["15.png", "16.png", "17.png"],
     tags: ["Shop-in-Shop", "Site Supervision", "Fixture Installation", "Kick-off Meeting Facilitation"],
     isStudent: false,
-    isComputer: false
+    isComputer: false,
+    additionalImages: [
+      "/images/optimized-images/arch-pro/04_LG_Shop-in-Shop_Stax_Woodlands/15.webp",
+      "/images/optimized-images/arch-pro/04_LG_Shop-in-Shop_Stax_Woodlands/17.webp"
+    ]
   },
   {
     id: 5,
@@ -73,11 +93,16 @@ export const projects: Project[] = [
     date: "2018",
     location: "Nairobi, Kenya",
     description: "Design and construction of LG Shop-in-Shop at Tuskys T-Mall",
-    image: "/images/arch-pro/05_LG_Shop-in-Shop_Tuskys_T-Mall/19.png",
+    image: "/images/optimized-images/arch-pro/05_LG_Shop-in-Shop_Tuskys_T-Mall/19.webp",
     imageFiles: ["18.png", "19.png", "20.png", "21.png"],
     tags: ["Shop-in-Shop", "Retail Operations", "Procurement", "Stakeholder Communication"],
     isStudent: false,
-    isComputer: false
+    isComputer: false,
+    additionalImages: [
+      "/images/optimized-images/arch-pro/05_LG_Shop-in-Shop_Tuskys_T-Mall/18.webp",
+      "/images/optimized-images/arch-pro/05_LG_Shop-in-Shop_Tuskys_T-Mall/20.webp",
+      "/images/optimized-images/arch-pro/05_LG_Shop-in-Shop_Tuskys_T-Mall/21.webp"
+    ]
   },
   {
     id: 6,
@@ -86,11 +111,16 @@ export const projects: Project[] = [
     date: "2017",
     location: "Dubai, United Arab Emirates",
     description: "Design and construction of LG Shop-in-Shop at Plugin Dubai Festival City",
-    image: "/images/arch-pro/06_LG_Shop-in-Shop_Plugin_Dubai/23.png",
+    image: "/images/optimized-images/arch-pro/06_LG_Shop-in-Shop_Plugin_Dubai/23.webp",
     imageFiles: ["22.png", "23.png", "24.png", "25.png"],
     tags: ["Shop-in-Shop", "International Coordination", "Logistics", "Daily Progress Updates"],
     isStudent: false,
-    isComputer: false
+    isComputer: false,
+    additionalImages: [
+      "/images/optimized-images/arch-pro/06_LG_Shop-in-Shop_Plugin_Dubai/22.webp",
+      "/images/optimized-images/arch-pro/06_LG_Shop-in-Shop_Plugin_Dubai/24.webp",
+      "/images/optimized-images/arch-pro/06_LG_Shop-in-Shop_Plugin_Dubai/25.webp"
+    ]
   },
   {
     id: 7,
@@ -99,11 +129,18 @@ export const projects: Project[] = [
     date: "2015",
     location: "Durban, South Africa",
     description: "Design and construction of Samsung Premium Brand Store at Gateway Mall",
-    image: "/images/arch-pro/07_SS_Premium_Brand_Store_Gateway/27.png",
+    image: "/images/optimized-images/arch-pro/07_SS_Premium_Brand_Store_Gateway/27.webp",
     imageFiles: ["26.png", "27.png", "28.png", "29.png", "30.png", "31.png"],
     tags: ["Brand Shop", "Design Coordination", "Store Planning", "Stakeholder Communication"],
     isStudent: false,
-    isComputer: false
+    isComputer: false,
+    additionalImages: [
+      "/images/optimized-images/arch-pro/07_SS_Premium_Brand_Store_Gateway/26.webp",
+      "/images/optimized-images/arch-pro/07_SS_Premium_Brand_Store_Gateway/28.webp",
+      "/images/optimized-images/arch-pro/07_SS_Premium_Brand_Store_Gateway/29.webp",
+      "/images/optimized-images/arch-pro/07_SS_Premium_Brand_Store_Gateway/30.webp",
+      "/images/optimized-images/arch-pro/07_SS_Premium_Brand_Store_Gateway/31.webp"
+    ]
   },
   {
     id: 8,
@@ -112,11 +149,17 @@ export const projects: Project[] = [
     date: "2015",
     location: "Various Location, South Africa",
     description: "Design and construction of Samsung Galaxy Note4 Roadshow Exhibition Event",
-    image: "/images/arch-pro/08_SS_Galaxy_Note4_Event/33.png",
+    image: "/images/optimized-images/arch-pro/08_SS_Galaxy_Note4_Event/33.webp",
     imageFiles: ["32.png", "33.png", "34.png", "35.png", "36.png"],
     tags: ["Event Design", "Vendor Coordination", "On-site Execution", "Project Timeline"],
     isStudent: false,
-    isComputer: false
+    isComputer: false,
+    additionalImages: [
+      "/images/optimized-images/arch-pro/08_SS_Galaxy_Note4_Event/32.webp",
+      "/images/optimized-images/arch-pro/08_SS_Galaxy_Note4_Event/34.webp",
+      "/images/optimized-images/arch-pro/08_SS_Galaxy_Note4_Event/35.webp",
+      "/images/optimized-images/arch-pro/08_SS_Galaxy_Note4_Event/36.webp"
+    ]
   },
   {
     id: 9,
@@ -125,11 +168,14 @@ export const projects: Project[] = [
     date: "2015",
     location: "South Africa",
     description: "Development of Samsung SES Guidelines and Documentation",
-    image: "/images/arch-pro/09_SS_SES_Guideline_Development/38.png",
+    image: "/images/optimized-images/arch-pro/09_SS_SES_Guideline_Development/38.webp",
     imageFiles: ["37.png", "38.png", "39.png"],
     tags: ["Guideline Development", "Visual Design", "Documentation", "Brand Consistency"],
     isStudent: false,
-    isComputer: false
+    isComputer: false,
+    additionalImages: [
+      "/images/optimized-images/arch-pro/09_SS_SES_Guideline_Development/37.webp"
+    ]
   },
   {
     id: 10,
@@ -138,11 +184,18 @@ export const projects: Project[] = [
     date: "2014",
     location: "Lagos, Nigeria",
     description: "Design and construction of Samsung Premium Mobile Store at Ikeja Mall",
-    image: "/images/arch-pro/10_SS_Premium_Mobile_Store_Ikeja/41.png",
+    image: "/images/optimized-images/arch-pro/10_SS_Premium_Mobile_Store_Ikeja/41.webp",
     imageFiles: ["40.png", "41.png", "42.png", "43.png", "44.png", "45.png"],
     tags: ["Retail Strategy", "Store Launch", "Brand Implementation", "Design Management"],
     isStudent: false,
-    isComputer: false
+    isComputer: false,
+    additionalImages: [
+      "/images/optimized-images/arch-pro/10_SS_Premium_Mobile_Store_Ikeja/40.webp",
+      "/images/optimized-images/arch-pro/10_SS_Premium_Mobile_Store_Ikeja/42.webp",
+      "/images/optimized-images/arch-pro/10_SS_Premium_Mobile_Store_Ikeja/43.webp",
+      "/images/optimized-images/arch-pro/10_SS_Premium_Mobile_Store_Ikeja/44.webp",
+      "/images/optimized-images/arch-pro/10_SS_Premium_Mobile_Store_Ikeja/45.webp"
+    ]
   },
   {
     id: 11,
@@ -151,11 +204,17 @@ export const projects: Project[] = [
     date: "2013",
     location: "Johannesburg, South Africa",
     description: "Design and construction of Samsung Show Window Display",
-    image: "/images/arch-pro/11_SS_Show_Window_Display/47.png",
+    image: "/images/optimized-images/arch-pro/11_SS_Show_Window_Display/47.webp",
     imageFiles: ["46.png", "47.png", "48.png", "49.png", "50.png"],
     tags: ["Visual Merchandising", "Show Window Design", "Branding", "Layout Planning"],
     isStudent: false,
-    isComputer: false
+    isComputer: false,
+    additionalImages: [
+      "/images/optimized-images/arch-pro/11_SS_Show_Window_Display/46.webp",
+      "/images/optimized-images/arch-pro/11_SS_Show_Window_Display/48.webp",
+      "/images/optimized-images/arch-pro/11_SS_Show_Window_Display/49.webp",
+      "/images/optimized-images/arch-pro/11_SS_Show_Window_Display/50.webp"
+    ]
   },
   {
     id: 12,
@@ -176,14 +235,18 @@ export const projects: Project[] = [
   - Tutor Comments: 1:1 communication with tutor, no peer messaging.
   - Vocabulary Test Page: Randomized flashcards, records latest scores for analysis.
   `,
-    image: "/images/web-dev/edu-ocean/01.png",
+    image: "/images/optimized-images/web-dev/edu-ocean/01.webp",
     imageFiles: ["01.png", "02.png", "03.png"],
     tags: [
       "Django", "Python", "Bootstrap", "AWS EC2", "AWS RDS", "MySQL",
       "Responsive Design", "Flash Card Test", "Progress Tracker"
     ],
     isStudent: false,
-    isComputer: true
+    isComputer: true,
+    additionalImages: [
+      "/images/optimized-images/web-dev/edu-ocean/02.webp",
+      "/images/optimized-images/web-dev/edu-ocean/03.webp"
+    ]
   },
   {
     id: 13,
@@ -200,7 +263,7 @@ export const projects: Project[] = [
   
       <h3>Main Hypotheses:</h3>
       <ul>
-        <li>h1: Tutor’s feedback increases engagement</li>
+        <li>h1: Tutor's feedback increases engagement</li>
         <li>h2: Peer communication increases engagement</li>
         <li>h3: Platform functions impact engagement</li>
         <li>h4: Engagement correlates with academic achievement</li>
@@ -217,14 +280,27 @@ export const projects: Project[] = [
         <strong>Skills demonstrated:</strong> Data analysis, experimental design, user behavior tracking, full-stack web development, visualization.
       </p>
     `,
-    image: "/images/data-analysis/elearning-effectiveness/01.png",
+    image: "/images/optimized-images/data-analysis/elearning-effectiveness/01.webp",
     imageFiles: ["01.png", "02.png", "03.png", "04.png", "05.png", "06.png", "07.png", "08.png", "09.png", "10.png", "11.png", "12.png"],
     tags: [
       "Data Analysis", "User Behavior", "Education Research", "Django",
       "KakaoTalk", "Flashcard Quiz", "Experimental Design", "COVID-19", "Python"
     ],
     isStudent: false,
-    isComputer: true
+    isComputer: true,
+    additionalImages: [
+      "/images/optimized-images/data-analysis/elearning-effectiveness/02.webp",
+      "/images/optimized-images/data-analysis/elearning-effectiveness/03.webp",
+      "/images/optimized-images/data-analysis/elearning-effectiveness/04.webp",
+      "/images/optimized-images/data-analysis/elearning-effectiveness/05.webp",
+      "/images/optimized-images/data-analysis/elearning-effectiveness/06.webp",
+      "/images/optimized-images/data-analysis/elearning-effectiveness/07.webp",
+      "/images/optimized-images/data-analysis/elearning-effectiveness/08.webp",
+      "/images/optimized-images/data-analysis/elearning-effectiveness/09.webp",
+      "/images/optimized-images/data-analysis/elearning-effectiveness/10.webp",
+      "/images/optimized-images/data-analysis/elearning-effectiveness/11.webp",
+      "/images/optimized-images/data-analysis/elearning-effectiveness/12.webp"
+    ]
   },
   {
     id: 14,
@@ -261,11 +337,16 @@ export const projects: Project[] = [
         ></iframe>
       </div>
     `,
-    image: "/images/data-analysis/web-analytics/01.png",
+    image: "/images/optimized-images/data-analysis/web-analytics/01.webp",
     imageFiles: ["01.png", "02.png", "03.png", "04.png"],
     tags: ["Data Visualization", "Google Analytics", "Chart.js", "Traffic Sources", "User Behavior"],
     isStudent: false,
-    isComputer: true
+    isComputer: true,
+    additionalImages: [
+      "/images/optimized-images/data-analysis/web-analytics/02.webp",
+      "/images/optimized-images/data-analysis/web-analytics/03.webp",
+      "/images/optimized-images/data-analysis/web-analytics/04.webp"
+    ]
   },
   {
     id: 15,
@@ -303,14 +384,19 @@ export const projects: Project[] = [
         ></iframe>
       </div>
     `,
-    image: "/images/data-analysis/kakaotalk-effectiveness/01.png",
+    image: "/images/optimized-images/data-analysis/kakaotalk-effectiveness/01.webp",
     imageFiles: ["01.png", "02.png", "03.png", "04.png"],
     tags: [
       "KakaoTalk", "Engagement Metrics", "E-Score", "Chat Log Analysis", "Education Analytics",
       "Scatter Plot", "Bar Chart", "User Behavior", "COVID-19"
     ],
     isStudent: false,
-    isComputer: true
+    isComputer: true,
+    additionalImages: [
+      "/images/optimized-images/data-analysis/kakaotalk-effectiveness/02.webp",
+      "/images/optimized-images/data-analysis/kakaotalk-effectiveness/03.webp",
+      "/images/optimized-images/data-analysis/kakaotalk-effectiveness/04.webp"
+    ]
   },
   {
     id: 16,
@@ -353,18 +439,16 @@ export const projects: Project[] = [
         ></iframe>
       </div>
     `,
-    image: "/images/data-analysis/email-dashboard/01.png",
+    image: "/images/optimized-images/data-analysis/email-dashboard/01.webp",
     imageFiles: ["01.png"],
     tags: [
       "Email Marketing", "Newsletter", "Open Rate", "Click Rate",
       "Engagement", "Subscriber Growth", "Dashboard", "Data Visualization"
     ],
     isStudent: false,
-    isComputer: true
+    isComputer: true,
+    additionalImages: [
+      "/images/optimized-images/data-analysis/email-dashboard/02.webp"
+    ]
   }
-  
-  
-  
-  
-  
 ];

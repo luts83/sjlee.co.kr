@@ -1,12 +1,98 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { useSwipeable } from 'react-swipeable';
 import { projects } from '../data/projects';
+
+interface Project {
+  id: number;
+  title: string;
+  date: string;
+  description: string;
+  image: string;
+  tags: string[];
+  isStudent: boolean;
+  isComputer: boolean;
+  additionalImages?: string[];
+  imageFiles?: string[];
+  location?: string;
+  descriptionText?: string;
+}
 
 const ProjectDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [currentImage, setCurrentImage] = useState(0);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [showSwipeGuide, setShowSwipeGuide] = useState(true);
+
   const project = projects.find(p => p.id === Number(id));
+
+  // 스와이프 핸들러
+  const swipeHandlers = useSwipeable({
+    onSwipedLeft: () => nextImage(),
+    onSwipedRight: () => prevImage(),
+    trackMouse: true
+  });
+
+  // 스와이프 가이드 메시지 3초 후 숨기기
+  useEffect(() => {
+    if (isModalOpen && showSwipeGuide) {
+      const timer = setTimeout(() => {
+        setShowSwipeGuide(false);
+      }, 3000);
+
+      return () => clearTimeout(timer);
+    }
+  }, [isModalOpen, showSwipeGuide]);
+
+  const openModal = useCallback((index: number) => {
+    setCurrentImage(index);
+    setIsModalOpen(true);
+    setShowSwipeGuide(true);
+    document.body.style.overflow = 'hidden';
+  }, []);
+
+  const closeModal = useCallback(() => {
+    setIsModalOpen(false);
+    document.body.style.overflow = 'auto';
+  }, []);
+
+  const nextImage = useCallback(() => {
+    setCurrentImage((prev) => (prev + 1) % allImages.length);
+  }, []);
+
+  const prevImage = useCallback(() => {
+    setCurrentImage((prev) => (prev - 1 + allImages.length) % allImages.length);
+  }, []);
+
+  // ESC 키로 모달 닫기
+  useEffect(() => {
+    const handleEscape = (e: KeyboardEvent) => {
+      if (e.key === 'Escape' && isModalOpen) {
+        closeModal();
+      }
+    };
+
+    window.addEventListener('keydown', handleEscape);
+    return () => window.removeEventListener('keydown', handleEscape);
+  }, [isModalOpen, closeModal]);
+
+  // 화살표 키로 이미지 이동
+  useEffect(() => {
+    const handleArrowKeys = (e: KeyboardEvent) => {
+      if (isModalOpen) {
+        if (e.key === 'ArrowRight') {
+          nextImage();
+        } else if (e.key === 'ArrowLeft') {
+          prevImage();
+        }
+      }
+    };
+
+    window.addEventListener('keydown', handleArrowKeys);
+    return () => window.removeEventListener('keydown', handleArrowKeys);
+  }, [isModalOpen, nextImage, prevImage]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -21,22 +107,32 @@ const ProjectDetail: React.FC = () => {
   }
 
   const folderPath = project.image.substring(0, project.image.lastIndexOf('/'));
-  const projectImages = project.imageFiles.map(file => `${folderPath}/${file}`);
+  const projectImages = project.imageFiles?.map(file => `${folderPath}/${file}`) || [];
+
+  // 이미지 경로를 WebP로 변경
+  const mainImage = project.image.replace(/\.(png|jpg|jpeg)$/i, '.webp');
+  const additionalImages = project.additionalImages?.map(img => 
+    img.replace(/\.(png|jpg|jpeg)$/i, '.webp')
+  ) || [];
+
+  // 모든 이미지를 하나의 배열로 합치기
+  const allImages = project.isComputer 
+    ? [mainImage, ...additionalImages]  // 코드 프로젝트는 메인 이미지 먼저
+    : [...additionalImages, mainImage]; // 디자인 프로젝트는 추가 이미지 먼저
 
   const fadeInUp = {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
 
-// ✅ 연도 기준 내림차순 정렬된 배열 사용
-const sortedProjects = [...projects]
-  .filter((p) => !p.isStudent)
-  .sort((a, b) => Number(b.date) - Number(a.date));
+  // ✅ 연도 기준 내림차순 정렬된 배열 사용
+  const sortedProjects = [...projects]
+    .filter((p) => !p.isStudent)
+    .sort((a, b) => Number(b.date) - Number(a.date));
 
-const currentIndex = sortedProjects.findIndex(p => p.id === Number(id));
-const prevProject = currentIndex > 0 ? sortedProjects[currentIndex - 1] : null;
-const nextProject = currentIndex < sortedProjects.length - 1 ? sortedProjects[currentIndex + 1] : null;
-
+  const currentIndex = sortedProjects.findIndex(p => p.id === Number(id));
+  const prevProject = currentIndex > 0 ? sortedProjects[currentIndex - 1] : null;
+  const nextProject = currentIndex < sortedProjects.length - 1 ? sortedProjects[currentIndex + 1] : null;
 
   return (
     <div className="min-h-screen bg-white">
@@ -74,13 +170,25 @@ const nextProject = currentIndex < sortedProjects.length - 1 ? sortedProjects[cu
 
         {/* Image Gallery */}
         <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="space-y-10 mb-12">
-          {projectImages.map((src, index) => (
-            <img
+          {allImages.map((image, index) => (
+            <div
               key={index}
-              src={src}
-              alt={`${project.title} - ${index + 1}`}
-              className="w-full rounded-lg shadow-md"
-            />
+              className="relative cursor-pointer group"
+              onClick={() => openModal(index)}
+            >
+              <img
+                src={image}
+                alt={`${project.title} - ${index + 1}`}
+                className="w-full h-auto rounded-lg shadow-lg object-contain group-hover:opacity-90 transition-opacity duration-300"
+                loading="lazy"
+                style={{ maxHeight: '80vh' }}
+              />
+              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                <div className="bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg">
+                  Click to enlarge
+                </div>
+              </div>
+            </div>
           ))}
         </motion.div>
 
@@ -108,8 +216,6 @@ const nextProject = currentIndex < sortedProjects.length - 1 ? sortedProjects[cu
             />
           </motion.div>
         )}
-
-
 
         {/* Navigation */}
         <motion.div
@@ -153,6 +259,63 @@ const nextProject = currentIndex < sortedProjects.length - 1 ? sortedProjects[cu
             </button>
           ) : <div />}
         </motion.div>
+
+        {/* Image Modal */}
+        {isModalOpen && (
+          <div 
+            className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50"
+            onClick={closeModal}
+          >
+            <div 
+              className="relative max-w-6xl w-full mx-4"
+              onClick={(e) => e.stopPropagation()}
+              {...swipeHandlers}
+            >
+              <button
+                onClick={closeModal}
+                className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
+              >
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                </svg>
+              </button>
+              <button
+                onClick={prevImage}
+                className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-10 hidden md:block"
+              >
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                </svg>
+              </button>
+              <button
+                onClick={nextImage}
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-10 hidden md:block"
+              >
+                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                </svg>
+              </button>
+              <div className="relative">
+                <img
+                  src={allImages[currentImage]}
+                  alt={`${project.title} - ${currentImage + 1}`}
+                  className="w-full h-auto max-h-[90vh] object-contain"
+                />
+                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 px-4 py-2 rounded-lg">
+                  {currentImage + 1} / {allImages.length}
+                </div>
+                {/* 모바일에서만 표시되는 스와이프 가이드 */}
+                {showSwipeGuide && (
+                  <div className="md:hidden absolute inset-0 flex items-center justify-center">
+                    <div className="text-white text-sm bg-black bg-opacity-50 px-4 py-2 rounded-lg animate-fade-out">
+                      Swipe left/right to navigate
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

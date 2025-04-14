@@ -135,6 +135,63 @@ const Portfolio: React.FC = () => {
               </p>
             </motion.div>
           </motion.div>
+          {/* Signature Section */}
+<motion.div
+  initial="hidden"
+  animate="visible"
+  variants={fadeInUp}
+  className="mt-24 pt-12 border-t border-gray-200 text-center relative pb-20"
+>
+  <p className="text-gray-500 mb-6 text-sm">
+    Thanks for stopping by — let's connect.
+  </p>
+
+  <button
+  onClick={() => {
+    const email = "lee.sanggean@gmail.com";
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(email)
+        .then(() => alert("📋 Email copied to clipboard!"))
+        .catch(() => fallbackCopy(email));
+    } else {
+      fallbackCopy(email);
+    }
+
+    function fallbackCopy(text: string) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed"; // avoid scrolling to bottom
+      textArea.style.left = "-9999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+
+      try {
+        document.execCommand("copy");
+        alert("📋 Email copied to clipboard!");
+      } catch (err) {
+        prompt("Copy email:", email);
+      }
+
+      document.body.removeChild(textArea);
+    }
+  }}
+  className="text-gray-400 hover:text-black transition-colors text-sm underline"
+>
+  lee.sanggean@gmail.com
+</button>
+
+
+  {/* Scroll to top round button */}
+  <button
+    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    className="fixed bottom-6 right-6 w-12 h-12 flex items-center justify-center bg-white/80 backdrop-blur-md border border-gray-300 rounded-full shadow-md hover:bg-white transition"
+    aria-label="Back to top"
+  >
+    <i className="fas fa-arrow-up text-gray-700"></i>
+  </button>
+</motion.div>
         </div>
       </div>
     </div>

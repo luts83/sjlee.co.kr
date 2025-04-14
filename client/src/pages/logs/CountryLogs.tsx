@@ -12,18 +12,15 @@ import {
   Popup,
 } from "react-leaflet";
 
-
 import markerIcon2x from "leaflet/dist/images/marker-icon-2x.png";
 import markerIcon from "leaflet/dist/images/marker-icon.png";
 import markerShadow from "leaflet/dist/images/marker-shadow.png";
 
-// ✅ 이렇게 정확하게 이미지 경로를 지정해줘야 함
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: markerIcon2x,
   iconUrl: markerIcon,
   shadowUrl: markerShadow
 });
-
 
 interface LogItem {
   src: string;
@@ -55,20 +52,12 @@ const CountryLogs: React.FC = () => {
 
             if (slugged === country) {
               const countryData = data[year][originalCountryName];
-
-              let itemsArray: LogItem[] = [];
-
-              if (Array.isArray(countryData)) {
-                itemsArray = countryData;
-              } else if (typeof countryData === "object" && countryData !== null) {
-                itemsArray = Object.values(countryData)
-                  .flatMap((cityItems) => (Array.isArray(cityItems) ? cityItems : []));
-              }
+              const itemsArray = Array.isArray(countryData)
+                ? countryData
+                : Object.values(countryData).flat();
 
               if (!result[year]) result[year] = [];
               result[year].push(...itemsArray);
-
-              // 지도용 로그
               mapPoints.push(...itemsArray.filter((i) => i.latitude && i.longitude));
             }
           }
@@ -83,13 +72,12 @@ const CountryLogs: React.FC = () => {
       });
   }, [country]);
 
-  // 🧭 지도 시작 위치
   const defaultCenter = mapLogs.length > 0
     ? [mapLogs[0].latitude!, mapLogs[0].longitude!]
     : [0, 0];
 
   const customIcon = L.icon({
-    iconUrl: "/images/pin-orange.svg", // 너가 원하면 커스텀 가능
+    iconUrl: "/images/pin-orange.svg",
     iconSize: [24, 36],
     iconAnchor: [12, 36],
     popupAnchor: [0, -36]
@@ -97,7 +85,6 @@ const CountryLogs: React.FC = () => {
 
   return (
     <div className="px-6 pt-20 text-white bg-black min-h-screen">
-      {/* Back Button */}
       <button
         onClick={() => navigate('/logs')}
         className="mb-8 text-gray-400 hover:text-white transition-colors"
@@ -109,7 +96,6 @@ const CountryLogs: React.FC = () => {
         {country?.replace(/-/g, " ")}
       </h1>
 
-      {/* 지도 섹션 */}
       {mapLogs.length > 0 && (
         <div className="mb-16">
           <h2 className="text-2xl font-light text-gray-300 mb-4">
@@ -158,7 +144,6 @@ const CountryLogs: React.FC = () => {
         </div>
       )}
 
-      {/* 갤러리 */}
       {Object.keys(groupedLogs).length === 0 ? (
         <p>No logs found for this country.</p>
       ) : (

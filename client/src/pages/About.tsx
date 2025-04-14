@@ -29,19 +29,47 @@ const About: React.FC = () => {
           Sangjin Lee
         </motion.h1>
 
+        
+
         <motion.div
           initial="hidden"
           animate="visible"
           variants={staggerChildren}
         >
-          <motion.div variants={fadeInUp}>
-            <h2 className="text-sm font-bold uppercase tracking-wider mb-4 text-gray-600">
-              Head of Retail, Designer, Developer
-            </h2>
-            <p className="text-gray-600 leading-relaxed mb-8">
-              Sangjin Lee is an experienced Head of Retail and Designer with a strong background in retail management, design, and development. With a focus on omnichannel retail strategies, data analytics, and digital marketing, Sangjin has led numerous projects for global brands like Samsung and LG, delivering innovative solutions that enhance efficiency and profitability.
-            </p>
-          </motion.div>
+          <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="mb-12">
+          <div className="relative bg-white py-20 px-6 md:px-12 rounded-lg shadow-sm border border-gray-200">
+  <div className="relative z-10">
+    <div className="text-6xl text-gray-300 font-serif mb-4 select-none">“</div>
+
+    <h1 className="text-2xl sm:text-3xl font-light tracking-tight text-gray-800 mb-2">
+      Tribrid talent —
+    </h1>
+    <p className="text-sm sm:text-base text-gray-500 mb-8 italic">
+      architecturally trained, digitally fluent, and commercially strategic.
+    </p>
+
+    <div className="text-gray-700 text-base sm:text-lg leading-relaxed font-serif max-w-3xl">
+      <p className="mb-5">
+        I'm a creative architect who designs both physical spaces and ideas.
+        From architectural design to brand strategy and digital platforms,
+        my work begins by connecting environments, people, and the stories in between.
+      </p>
+      <p>
+        With a spirit of exploration, I travel the world to observe cultures,
+        constantly learning and expanding my horizon. More than just someone who works well,
+        I aim to be remembered as someone who designs new possibilities and flows.
+      </p>
+    </div>
+
+    <div className="text-6xl text-gray-300 font-serif text-right mt-4 select-none">”</div>
+  </div>
+</div>
+
+
+
+
+</motion.div>
+
 
           <motion.div variants={fadeInUp}>
             <h3 className="text-sm font-bold uppercase tracking-wider mb-4 text-gray-600">
@@ -54,33 +82,45 @@ const About: React.FC = () => {
           </motion.div>
 
           <motion.div variants={fadeInUp}>
-            <h3 className="text-sm font-bold uppercase tracking-wider mb-4 text-gray-600">
-              Skills and Knowledge
-            </h3>
-            <ul className="space-y-2 mb-12">
-              <li className="text-gray-600">
-                <strong>Design:</strong> SketchUp, Photoshop, AutoCAD, 3D MAX, Illustrator, Final Cut Pro
-              </li>
-              <li className="text-gray-600">
-                <strong>OA:</strong> MS-office, Google docs suite
-              </li>
-              <li className="text-gray-600">
-                <strong>Computing/Programming:</strong> Python, JAVA, SQL, Docker, Amazon AWS, Django, Flask, HTML, CSS, Javascript, Bootstrap, Jupyter Notebook, Github, REST-APIs, Linux OS
-              </li>
-              <li className="text-gray-600">
-                <strong>Analytics:</strong> Google Analytics, Pandas, Numpy, Matplotlib, Seaborn
-              </li>
-              <li className="text-gray-600">
-                <strong>Machine Learning:</strong> Scikit-Learn, Tensorflow, Keras
-              </li>
-            </ul>
-          </motion.div>
+  <h3 className="text-sm font-bold uppercase tracking-wider mb-4 text-gray-600">
+    Skills and Knowledge
+  </h3>
+  <ul className="space-y-2 mb-12 text-gray-600">
+    <li><strong>Design:</strong> SketchUp, Photoshop, AutoCAD, 3D MAX, Illustrator, Final Cut Pro</li>
+    <li><strong>OA:</strong> MS Office, Google Docs Suite, Notion</li>
+    <li><strong>Web/Dev:</strong> MERN Stack (MongoDB, Express, React, Node.js), HTML, CSS, JavaScript, Bootstrap</li>
+    <li><strong>Backend/Data:</strong> Python, SQL, REST APIs, Linux, Flask, AWS</li>
+    <li><strong>Analytics:</strong> Google Analytics, Pandas, Numpy, Matplotlib, Seaborn</li>
+    <li><strong>Machine Learning:</strong> Scikit-Learn, Tensorflow, Keras</li>
+  </ul>
+</motion.div>
+
+
 
           <motion.div variants={fadeInUp}>
             <h3 className="text-sm font-bold uppercase tracking-wider mb-4 text-gray-600">
               Experiences
             </h3>
             <ul className="space-y-6 mb-12">
+            <li>
+  <div className="flex flex-col md:flex-row justify-between gap-4">
+    <div className="md:w-2/3">
+      <p className="text-gray-600 leading-loose">
+        <span className="text-red-500 mr-2">•</span>
+        <strong>Digiocean / Co-Founder & Chief Operator</strong><br />
+        - Co-founded and spearhead an educational content brand, driving its strategic vision and operational excellence.<br />
+        - Direct brand strategy, digital marketing initiatives, and end-to-end platform management.<br />
+        - Oversee content curation, editing, and multi-channel publishing to ensure high-quality output.<br />
+        - Lead cross-functional efforts in UX optimization, data-driven analytics, and integrated campaign execution to maximize audience engagement and growth.
+      </p>
+    </div>
+    <div className="md:w-1/3 text-right text-gray-400 italic text-sm md:pl-4 md:border-l md:border-gray-200">
+      May 2023 – Present<br />
+      Woking, United Kingdom
+    </div>
+  </div>
+</li>
+
               <li>
                 <div className="flex flex-col md:flex-row justify-between gap-4">
                   <div className="md:w-2/3">
@@ -378,6 +418,64 @@ const About: React.FC = () => {
               Retail Management, Retail Design, Data Analytics, Digital Marketing, Smart Buildings, IoT, Cycling
             </p>
           </motion.div>
+          {/* Signature Section */}
+<motion.div
+  initial="hidden"
+  animate="visible"
+  variants={fadeInUp}
+  className="mt-24 pt-12 border-t border-gray-200 text-center relative pb-20"
+>
+  <p className="text-gray-500 mb-6 text-sm">
+    Thanks for stopping by — let's connect.
+  </p>
+
+  <button
+  onClick={() => {
+    const email = "lee.sanggean@gmail.com";
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(email)
+        .then(() => alert("📋 Email copied to clipboard!"))
+        .catch(() => fallbackCopy(email));
+    } else {
+      fallbackCopy(email);
+    }
+
+    function fallbackCopy(text: string) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed"; // avoid scrolling to bottom
+      textArea.style.left = "-9999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+
+      try {
+        document.execCommand("copy");
+        alert("📋 Email copied to clipboard!");
+      } catch (err) {
+        prompt("Copy email:", email);
+      }
+
+      document.body.removeChild(textArea);
+    }
+  }}
+  className="text-gray-400 hover:text-black transition-colors text-sm underline"
+>
+  lee.sanggean@gmail.com
+</button>
+
+
+  {/* Scroll to top round button */}
+  <button
+    onClick={() => window.scrollTo({ top: 0, behavior: "smooth" })}
+    className="fixed bottom-6 right-6 w-12 h-12 flex items-center justify-center bg-white/80 backdrop-blur-md border border-gray-300 rounded-full shadow-md hover:bg-white transition"
+    aria-label="Back to top"
+  >
+    <i className="fas fa-arrow-up text-gray-700"></i>
+  </button>
+</motion.div>
+
         </motion.div>
       </div>
     </div>

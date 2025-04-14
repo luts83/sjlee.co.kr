@@ -8,7 +8,6 @@ import Blog from './pages/Blog';
 import Contact from './pages/Contact';
 import ArchStudent from './pages/ArchStudent';
 import ArchPro from './pages/ArchPro';
-import WebDev from './pages/WebDev';
 import DataAnalysis from './pages/DataAnalysis';
 import ProjectDetail from './pages/ProjectDetail';
 import CountryLogs from './pages/logs/CountryLogs';
@@ -32,7 +31,6 @@ const App: React.FC = () => {
         <Route path="/contact" element={<Contact />} />
         <Route path="/portfolio/arch-student" element={<ArchStudent />} />
         <Route path="/portfolio/arch-pro" element={<ArchPro />} />
-        <Route path="/portfolio/web-dev" element={<WebDev />} />
         <Route path="/portfolio/data-analysis" element={<DataAnalysis />} />
         <Route path="/portfolio/code/:id" element={<ProjectDetail />} />
         <Route path="/logs" element={<LogsGlobe />} />

@@ -27,7 +27,6 @@ const LogsGlobe: React.FC = () => {
   const globeRef = useRef<any>(null);
   const navigate = useNavigate();
 
-  // fetch markers
   useEffect(() => {
     fetch("/assets/logsGrouped.json")
       .then((res) => res.json())
@@ -36,8 +35,12 @@ const LogsGlobe: React.FC = () => {
 
         for (const year in data) {
           for (const country in data[year]) {
-            const allCities = Object.values(data[year][country]).flat() as any[];
-            const withCoords = allCities.find((item) => item.latitude && item.longitude);
+            const entries = data[year][country];
+            const allItems = Array.isArray(entries)
+              ? entries
+              : Object.values(entries).flat();
+
+            const withCoords = allItems.find((item: any) => item.latitude && item.longitude);
             if (withCoords) {
               result.push({
                 country,
@@ -53,7 +56,6 @@ const LogsGlobe: React.FC = () => {
       });
   }, []);
 
-  // resize handling
   useEffect(() => {
     const handleResize = () => {
       setSize({ width: window.innerWidth, height: window.innerHeight });
@@ -62,7 +64,6 @@ const LogsGlobe: React.FC = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  // on mount, restore previous focus if exists
   useEffect(() => {
     const saved = localStorage.getItem("lastGlobeFocus");
     if (saved && globeRef.current) {
@@ -96,14 +97,11 @@ const LogsGlobe: React.FC = () => {
         pointLat={(d: any) => d.lat}
         pointLng={(d: any) => d.lng}
         pointColor={() => "orange"}
-        pointAltitude={() => 0.08} // 모바일 대응을 위한 클릭 높이 개선
+        pointAltitude={() => 0.08}
         pointLabel={(d: any) => `${d.country} (${d.year})`}
         onPointClick={(d: any) => {
           const slug = d.country.toLowerCase().replace(/ /g, "-");
-          localStorage.setItem(
-            "lastGlobeFocus",
-            JSON.stringify({ lat: d.lat, lng: d.lng })
-          );
+          localStorage.setItem("lastGlobeFocus", JSON.stringify({ lat: d.lat, lng: d.lng }));
           navigate(`/logs/${slug}`);
         }}
       />

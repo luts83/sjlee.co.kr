@@ -7,6 +7,8 @@ interface ContactForm {
   message: string;
 }
 
+type FormStatus = 'initial' | 'loading' | 'success' | 'error';
+
 const Contact: React.FC = () => {
   const [formData, setFormData] = useState<ContactForm>({
     name: '',
@@ -14,7 +16,7 @@ const Contact: React.FC = () => {
     message: ''
   });
 
-  const [loading, setLoading] = useState(false);
+  const [status, setStatus] = useState<FormStatus>('initial');
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
@@ -24,15 +26,15 @@ const Contact: React.FC = () => {
     }));
   };
 
-  const handleEmailClick = () => {
-    navigator.clipboard.writeText("lee.sanggean@gmail.com");
-    toast.success("Email copied!");
-  };
+  // const handleEmailClick = () => {
+  //   navigator.clipboard.writeText("lee.sanggean@gmail.com");
+  //   toast.success("📋 Email copied to clipboard!"); // ← 여기가 이모지 들어간 부분
+  // };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setLoading(true);
-
+    setStatus('loading');
+    
     try {
       const response = await fetch("https://formspree.io/f/xanevoke", {
         method: "POST",
@@ -45,19 +47,19 @@ const Contact: React.FC = () => {
       if (response.ok) {
         toast.success("✅ Your message has been sent!");
         setFormData({ name: "", email: "", message: "" });
+        setStatus('success');
       } else {
         toast.error("❌ Failed to send. Please try again.");
+        setStatus('error');
       }
     } catch (error) {
       toast.error("⚠️ Something went wrong.");
-      console.error(error);
-    } finally {
-      setLoading(false);
+      setStatus('error');
     }
   };
 
   return (
-    <div className="pt-20 px-6 min-h-screen bg-white text-gray-600">
+    <div className="pt-20 px-6 pb-20 min-h-screen bg-white text-gray-600">
       <Toaster position="top-right" reverseOrder={false} />
 
       <div className="max-w-3xl mx-auto">
@@ -78,6 +80,7 @@ const Contact: React.FC = () => {
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
                 required
+                disabled={status === 'loading'}
               />
             </div>
 
@@ -93,6 +96,7 @@ const Contact: React.FC = () => {
                 onChange={handleChange}
                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
                 required
+                disabled={status === 'loading'}
               />
             </div>
 
@@ -108,42 +112,71 @@ const Contact: React.FC = () => {
                 rows={5}
                 className="w-full px-4 py-3 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-black"
                 required
+                disabled={status === 'loading'}
               />
             </div>
 
             <button
               type="submit"
-              disabled={loading}
-              className={`w-full bg-black text-white font-semibold py-3 rounded-md transition-colors ${
-                loading ? "bg-gray-600 cursor-not-allowed" : "hover:bg-gray-800"
+              className={`w-full py-3 px-4 rounded-md text-white font-medium ${
+                status === 'loading' 
+                  ? 'bg-gray-400 cursor-not-allowed' 
+                  : 'bg-black hover:bg-gray-800'
               }`}
+              disabled={status === 'loading'}
             >
-              {loading ? "Sending..." : "Send Message"}
+              {status === 'loading' ? 'Sending...' : 'Send Message'}
             </button>
           </form>
 
-          {/* Contact Info */}
-          <div className="space-y-12 text-sm leading-relaxed">
+          {/* Contact Information */}
+          <div className="space-y-6">
             <div>
-              <h2 className="text-sm font-bold uppercase tracking-wider mb-4">
-                Contact Information
-              </h2>
-              <ul className="space-y-2">
-                <li>
-                  📧 <span
-  onClick={handleEmailClick}
-  className="text-gray-400 hover:text-gray-600 cursor-pointer transition-colors"
->
-  lee.sanggean@gmail.com
-</span>
-                </li>
-                <li>
-                  📍 Seoul, South Korea / Woking, United Kingdom
-                </li>
-              </ul>
+              <h2 className="text-xl font-medium mb-4">Get in Touch</h2>
+              <p className="text-gray-600 mb-6">
+                Feel free to reach out to me for any questions or opportunities.
+              </p>
             </div>
 
             <div>
+  <h3 className="text-lg font-medium mb-2">Email</h3>
+  <button
+  onClick={() => {
+    const email = "lee.sanggean@gmail.com";
+
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(email)
+        .then(() => alert("📋 Email copied to clipboard!"))
+        .catch(() => fallbackCopy(email));
+    } else {
+      fallbackCopy(email);
+    }
+
+    function fallbackCopy(text: string) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      textArea.style.position = "fixed"; // avoid scrolling to bottom
+      textArea.style.left = "-9999px";
+      document.body.appendChild(textArea);
+      textArea.focus();
+      textArea.select();
+
+      try {
+        document.execCommand("copy");
+        alert("📋 Email copied to clipboard!");
+      } catch (err) {
+        prompt("Copy email:", email);
+      }
+
+      document.body.removeChild(textArea);
+    }
+  }}
+  className="text-gray-400 hover:text-black transition-colors text-sm underline"
+>
+  lee.sanggean@gmail.com
+</button>
+</div>
+<div>
               <h2 className="text-sm font-bold uppercase tracking-wider mb-4">
                 Follow Me
               </h2>
