@@ -5,97 +5,72 @@ import { useSwipeable } from 'react-swipeable';
 import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { projects } from '../data/projects';
-
-
-interface Project {
-  id: number;
-  title: string;
-  date: string;
-  description: string;
-  image: string;
-  tags: string[];
-  isStudent: boolean;
-  isComputer: boolean;
-  additionalImages?: string[];
-  imageFiles?: string[];
-  location?: string;
-  descriptionText?: string;
-}
+import { Project } from '../types/project';
 
 const ProjectDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [currentImage, setCurrentImage] = useState(0);
-  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const [isOpen, setIsOpen] = useState(false);
   const [showSwipeGuide, setShowSwipeGuide] = useState(true);
 
   const project = projects.find(p => p.id === Number(id)) as Project | undefined;
 
   // 스와이프 핸들러
   const swipeHandlers = useSwipeable({
-    onSwipedLeft: () => nextImage(),
-    onSwipedRight: () => prevImage(),
+    onSwipedLeft: () => goToNext(),
+    onSwipedRight: () => goToPrevious(),
     trackMouse: true
   });
 
   // 스와이프 가이드 메시지 3초 후 숨기기
   useEffect(() => {
-    if (isModalOpen && showSwipeGuide) {
+    if (isOpen && showSwipeGuide) {
       const timer = setTimeout(() => {
         setShowSwipeGuide(false);
       }, 3000);
 
       return () => clearTimeout(timer);
     }
-  }, [isModalOpen, showSwipeGuide]);
+  }, [isOpen, showSwipeGuide]);
 
-  const openModal = useCallback((index: number) => {
-    setCurrentImage(index);
-    setIsModalOpen(true);
-    setShowSwipeGuide(true);
-    document.body.style.overflow = 'hidden';
+  const openLightbox = useCallback((index: number) => {
+    setCurrentImageIndex(index);
+    setIsOpen(true);
   }, []);
 
-  const closeModal = useCallback(() => {
-    setIsModalOpen(false);
-    document.body.style.overflow = 'auto';
+  const closeLightbox = useCallback(() => {
+    setIsOpen(false);
   }, []);
 
-  const nextImage = useCallback(() => {
-    setCurrentImage((prev) => (prev + 1) % allImages.length);
-  }, []);
+  const goToPrevious = useCallback(() => {
+    if (project) {
+      setCurrentImageIndex(prev => (prev - 1 + project.images.length) % project.images.length);
+    }
+  }, [project]);
 
-  const prevImage = useCallback(() => {
-    setCurrentImage((prev) => (prev - 1 + allImages.length) % allImages.length);
-  }, []);
+  const goToNext = useCallback(() => {
+    if (project) {
+      setCurrentImageIndex(prev => (prev + 1) % project.images.length);
+    }
+  }, [project]);
 
-  // ESC 키로 모달 닫기
-  useEffect(() => {
-    const handleEscape = (e: KeyboardEvent) => {
-      if (e.key === 'Escape' && isModalOpen) {
-        closeModal();
-      }
-    };
+  const handleKeyDown = useCallback((e: KeyboardEvent) => {
+    if (e.key === 'Escape') {
+      closeLightbox();
+    } else if (e.key === 'ArrowLeft') {
+      goToPrevious();
+    } else if (e.key === 'ArrowRight') {
+      goToNext();
+    }
+  }, [closeLightbox, goToPrevious, goToNext]);
 
-    window.addEventListener('keydown', handleEscape);
-    return () => window.removeEventListener('keydown', handleEscape);
-  }, [isModalOpen, closeModal]);
-
-  // 화살표 키로 이미지 이동
-  useEffect(() => {
-    const handleArrowKeys = (e: KeyboardEvent) => {
-      if (isModalOpen) {
-        if (e.key === 'ArrowRight') {
-          nextImage();
-        } else if (e.key === 'ArrowLeft') {
-          prevImage();
-        }
-      }
-    };
-
-    window.addEventListener('keydown', handleArrowKeys);
-    return () => window.removeEventListener('keydown', handleArrowKeys);
-  }, [isModalOpen, nextImage, prevImage]);
+  React.useEffect(() => {
+    if (isOpen) {
+      window.addEventListener('keydown', handleKeyDown);
+      return () => window.removeEventListener('keydown', handleKeyDown);
+    }
+  }, [isOpen, handleKeyDown]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -177,7 +152,7 @@ const ProjectDetail: React.FC = () => {
             <div
               key={index}
               className="relative cursor-pointer group"
-              onClick={() => openModal(index)}
+              onClick={() => openLightbox(index)}
             >
               <LazyLoadImage
                 src={image}
@@ -264,10 +239,10 @@ const ProjectDetail: React.FC = () => {
         </motion.div>
 
         {/* Image Modal */}
-        {isModalOpen && (
+        {isOpen && (
           <div 
             className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50"
-            onClick={closeModal}
+            onClick={closeLightbox}
           >
             <div 
               className="relative max-w-6xl w-full mx-4"
@@ -275,7 +250,7 @@ const ProjectDetail: React.FC = () => {
               {...swipeHandlers}
             >
               <button
-                onClick={closeModal}
+                onClick={closeLightbox}
                 className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
               >
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -283,7 +258,7 @@ const ProjectDetail: React.FC = () => {
                 </svg>
               </button>
               <button
-                onClick={prevImage}
+                onClick={goToPrevious}
                 className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-10 hidden md:block"
               >
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -291,7 +266,7 @@ const ProjectDetail: React.FC = () => {
                 </svg>
               </button>
               <button
-                onClick={nextImage}
+                onClick={goToNext}
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-10 hidden md:block"
               >
                 <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -300,14 +275,14 @@ const ProjectDetail: React.FC = () => {
               </button>
               <div className="relative">
                 <LazyLoadImage
-                  src={allImages[currentImage]}
-                  alt={`${project.title} - ${currentImage + 1}`}
+                  src={allImages[currentImageIndex]}
+                  alt={`${project.title} - ${currentImageIndex + 1}`}
                   className="w-full h-auto max-h-[90vh] object-contain"
                   effect="blur"
-                  placeholderSrc={allImages[currentImage]}
+                  placeholderSrc={allImages[currentImageIndex]}
                 />
                 <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 px-4 py-2 rounded-lg">
-                  {currentImage + 1} / {allImages.length}
+                  {currentImageIndex + 1} / {allImages.length}
                 </div>
                 {/* 모바일에서만 표시되는 스와이프 가이드 */}
                 {showSwipeGuide && (
