@@ -49,11 +49,12 @@ const Portfolio: React.FC = () => {
       <meta name="description" content="Explore Sangjin Lee's portfolio showcasing architecture, digital design, and data projects." />
       <meta property="og:title" content="Sangjin Lee | Portfolio" />
       <meta property="og:description" content="Explore architecture, digital design, and data projects by Sangjin Lee." />
+      <meta property="og:image" content="/images/og/portfolio-og-image.png" />
     </Helmet>
     <div className="min-h-screen bg-white">
       <div id="design-section" className="pt-20 px-6 pb-10 bg-white">
         <div className="max-w-6xl mx-auto">
-          <motion.h1
+        <motion.h1
             className="text-4xl font-light mb-12 tracking-tight text-gray-600 text-center"
             initial="hidden"
             animate="visible"

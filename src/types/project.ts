@@ -1,3 +1,4 @@
+// src/types/project.ts
 export interface Project {
   id: number;
   title: string;
@@ -12,4 +13,4 @@ export interface Project {
   descriptionText?: string;
   imageFiles?: string[];
   additionalImages?: string[];
-} 
+}

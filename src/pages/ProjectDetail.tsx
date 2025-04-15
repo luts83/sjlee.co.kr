@@ -6,6 +6,7 @@ import { LazyLoadImage } from 'react-lazy-load-image-component';
 import 'react-lazy-load-image-component/src/effects/blur.css';
 import { projects } from '../data/projects';
 import { Project } from '../types/project';
+import { Helmet } from 'react-helmet-async';
 
 const ProjectDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>();
@@ -109,191 +110,203 @@ const ProjectDetail: React.FC = () => {
   const nextProject = currentIndex < sortedProjects.length - 1 ? sortedProjects[currentIndex + 1] : null;
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-4xl mx-auto px-6 py-20">
-        {/* Back Button */}
-        <button
-          onClick={() => navigate('/portfolio')}
-          className="mb-10 text-gray-600 hover:text-gray-800 flex items-center"
-        >
-          <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-          </svg>
-          Back to Projects
-        </button>
+    <>
+      <Helmet>
+        <title>{project.title} | Sangjin Lee</title>
+        <meta name="description" content={project.description} />
+        <meta property="og:title" content={`${project.title} | Sangjin Lee`} />
+        <meta property="og:description" content={project.description} />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content={`https://sjlee.co.kr${project.image}`} />
+        <meta property="og:url" content={`https://sjlee.co.kr/portfolio/${id}`} />
+        <meta name="twitter:card" content="summary_large_image" />
+      </Helmet>
+      <div className="min-h-screen bg-white">
+        <div className="max-w-4xl mx-auto px-6 py-20">
+          {/* Back Button */}
+          <button
+            onClick={() => navigate('/portfolio')}
+            className="mb-10 text-gray-600 hover:text-gray-800 flex items-center"
+          >
+            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            </svg>
+            Back to Projects
+          </button>
 
-        {/* Title & Meta */}
-        <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="mb-12">
-          <h1 className="text-4xl font-light tracking-tight text-gray-800 mb-4">{project.title}</h1>
-          <div className="flex items-center gap-4 text-gray-600">
-            <span>{project.date}</span>
-            <span>•</span>
-            <span>{project.location}</span>
-          </div>
-        </motion.div>
+          {/* Title & Meta */}
+          <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="mb-12">
+            <h1 className="text-4xl font-light tracking-tight text-gray-800 mb-4">{project.title}</h1>
+            <div className="flex items-center gap-4 text-gray-600">
+              <span>{project.date}</span>
+              <span>•</span>
+              <span>{project.location}</span>
+            </div>
+          </motion.div>
 
-        {/* Description */}
-        <motion.p
-          initial="hidden"
-          animate="visible"
-          variants={fadeInUp}
-          className="text-lg text-gray-700 leading-relaxed mb-12"
-        >
-          {project.description}
-        </motion.p>
+          {/* Description */}
+          <motion.p
+            initial="hidden"
+            animate="visible"
+            variants={fadeInUp}
+            className="text-lg text-gray-700 leading-relaxed mb-12"
+          >
+            {project.description}
+          </motion.p>
 
-        {/* Image Gallery */}
-        <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="space-y-10 mb-12">
-          {allImages.map((image, index) => (
-            <div
-              key={index}
-              className="relative cursor-pointer group"
-              onClick={() => openLightbox(index)}
-            >
-              <LazyLoadImage
-                src={image}
-                alt={`${project.title} - ${index + 1}`}
-                effect="blur"
-                className="w-full h-auto rounded-lg shadow-lg object-contain group-hover:opacity-90 transition-opacity duration-300"
-                placeholderSrc={image}
-              />
-              <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <div className="bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg">
-                  Click to enlarge
+          {/* Image Gallery */}
+          <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="space-y-10 mb-12">
+            {allImages.map((image, index) => (
+              <div
+                key={index}
+                className="relative cursor-pointer group"
+                onClick={() => openLightbox(index)}
+              >
+                <LazyLoadImage
+                  src={image}
+                  alt={`${project.title} - ${index + 1}`}
+                  effect="blur"
+                  className="w-full h-auto rounded-lg shadow-lg object-contain group-hover:opacity-90 transition-opacity duration-300"
+                  placeholderSrc={image}
+                />
+                <div className="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <div className="bg-black bg-opacity-50 text-white px-4 py-2 rounded-lg">
+                    Click to enlarge
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </motion.div>
-
-        {/* Tags */}
-        <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="mb-12">
-          <div className="flex flex-wrap gap-2">
-            {project.tags.map((tag, idx) => (
-              <span
-                key={idx}
-                className="text-sm text-gray-600 bg-gray-100 rounded-full px-3 py-1"
-              >
-                {tag}
-              </span>
             ))}
-          </div>
-        </motion.div>
-
-        {/* Long-form Description */}
-        {project.descriptionText && (
-          <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="mb-16">
-            <h2 className="text-2xl font-light text-gray-800 mb-6">Details</h2>
-            <div
-              className="prose prose-gray max-w-none text-gray-700"
-              dangerouslySetInnerHTML={{ __html: project.descriptionText }}
-            />
           </motion.div>
-        )}
 
-        {/* Navigation */}
-        <motion.div
-          initial="hidden"
-          animate="visible"
-          variants={fadeInUp}
-          className="flex justify-between items-center mt-16 pt-10 border-t border-gray-200"
-        >
-          {prevProject ? (
-            <button
-              onClick={() =>
-                navigate(
-                  prevProject.isComputer
-                    ? `/portfolio/code/${prevProject.id}`
-                    : `/portfolio/arch-pro/${prevProject.id}`
-                )
-              }
-              className="flex items-center text-gray-600 hover:text-gray-800"
-            >
-              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-              </svg>
-              Previous
-            </button>
-          ) : <div />}
-          {nextProject ? (
-            <button
-              onClick={() =>
-                navigate(
-                  nextProject.isComputer
-                    ? `/portfolio/code/${nextProject.id}`
-                    : `/portfolio/arch-pro/${nextProject.id}`
-                )
-              }
-              className="flex items-center text-gray-600 hover:text-gray-800"
-            >
-              Next
-              <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-              </svg>
-            </button>
-          ) : <div />}
-        </motion.div>
+          {/* Tags */}
+          <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="mb-12">
+            <div className="flex flex-wrap gap-2">
+              {project.tags.map((tag, idx) => (
+                <span
+                  key={idx}
+                  className="text-sm text-gray-600 bg-gray-100 rounded-full px-3 py-1"
+                >
+                  {tag}
+                </span>
+              ))}
+            </div>
+          </motion.div>
 
-        {/* Image Modal */}
-        {isOpen && (
-          <div 
-            className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50"
-            onClick={closeLightbox}
+          {/* Long-form Description */}
+          {project.descriptionText && (
+            <motion.div initial="hidden" animate="visible" variants={fadeInUp} className="mb-16">
+              <h2 className="text-2xl font-light text-gray-800 mb-6">Details</h2>
+              <div
+                className="prose prose-gray max-w-none text-gray-700"
+                dangerouslySetInnerHTML={{ __html: project.descriptionText }}
+              />
+            </motion.div>
+          )}
+
+          {/* Navigation */}
+          <motion.div
+            initial="hidden"
+            animate="visible"
+            variants={fadeInUp}
+            className="flex justify-between items-center mt-16 pt-10 border-t border-gray-200"
           >
-            <div 
-              className="relative max-w-6xl w-full mx-4"
-              onClick={(e) => e.stopPropagation()}
-              {...swipeHandlers}
-            >
+            {prevProject ? (
               <button
-                onClick={closeLightbox}
-                className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
+                onClick={() =>
+                  navigate(
+                    prevProject.isComputer
+                      ? `/portfolio/code/${prevProject.id}`
+                      : `/portfolio/arch-pro/${prevProject.id}`
+                  )
+                }
+                className="flex items-center text-gray-600 hover:text-gray-800"
               >
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
-                </svg>
-              </button>
-              <button
-                onClick={goToPrevious}
-                className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-10 hidden md:block"
-              >
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
                 </svg>
+                Previous
               </button>
+            ) : <div />}
+            {nextProject ? (
               <button
-                onClick={goToNext}
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-10 hidden md:block"
+                onClick={() =>
+                  navigate(
+                    nextProject.isComputer
+                      ? `/portfolio/code/${nextProject.id}`
+                      : `/portfolio/arch-pro/${nextProject.id}`
+                  )
+                }
+                className="flex items-center text-gray-600 hover:text-gray-800"
               >
-                <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                Next
+                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
                 </svg>
               </button>
-              <div className="relative">
-                <LazyLoadImage
-                  src={allImages[currentImageIndex]}
-                  alt={`${project.title} - ${currentImageIndex + 1}`}
-                  className="w-full h-auto max-h-[90vh] object-contain"
-                  effect="blur"
-                  placeholderSrc={allImages[currentImageIndex]}
-                />
-                <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 px-4 py-2 rounded-lg">
-                  {currentImageIndex + 1} / {allImages.length}
-                </div>
-                {/* 모바일에서만 표시되는 스와이프 가이드 */}
-                {showSwipeGuide && (
-                  <div className="md:hidden absolute inset-0 flex items-center justify-center">
-                    <div className="text-white text-sm bg-black bg-opacity-50 px-4 py-2 rounded-lg animate-fade-out">
-                      Swipe left/right to navigate
-                    </div>
+            ) : <div />}
+          </motion.div>
+
+          {/* Image Modal */}
+          {isOpen && (
+            <div 
+              className="fixed inset-0 bg-black bg-opacity-90 flex items-center justify-center z-50"
+              onClick={closeLightbox}
+            >
+              <div 
+                className="relative max-w-6xl w-full mx-4"
+                onClick={(e) => e.stopPropagation()}
+                {...swipeHandlers}
+              >
+                <button
+                  onClick={closeLightbox}
+                  className="absolute top-4 right-4 text-white hover:text-gray-300 z-10"
+                >
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                  </svg>
+                </button>
+                <button
+                  onClick={goToPrevious}
+                  className="absolute left-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-10 hidden md:block"
+                >
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                </button>
+                <button
+                  onClick={goToNext}
+                  className="absolute right-4 top-1/2 transform -translate-y-1/2 text-white hover:text-gray-300 z-10 hidden md:block"
+                >
+                  <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+                <div className="relative">
+                  <LazyLoadImage
+                    src={allImages[currentImageIndex]}
+                    alt={`${project.title} - ${currentImageIndex + 1}`}
+                    className="w-full h-auto max-h-[90vh] object-contain"
+                    effect="blur"
+                    placeholderSrc={allImages[currentImageIndex]}
+                  />
+                  <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 text-white bg-black bg-opacity-50 px-4 py-2 rounded-lg">
+                    {currentImageIndex + 1} / {allImages.length}
                   </div>
-                )}
+                  {/* 모바일에서만 표시되는 스와이프 가이드 */}
+                  {showSwipeGuide && (
+                    <div className="md:hidden absolute inset-0 flex items-center justify-center">
+                      <div className="text-white text-sm bg-black bg-opacity-50 px-4 py-2 rounded-lg animate-fade-out">
+                        Swipe left/right to navigate
+                      </div>
+                    </div>
+                  )}
+                </div>
               </div>
             </div>
-          </div>
-        )}
+          )}
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 

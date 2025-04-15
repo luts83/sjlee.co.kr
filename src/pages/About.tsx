@@ -2,8 +2,6 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { Helmet } from 'react-helmet-async';
 import { toast } from 'react-hot-toast';
-import { FaCopy } from 'react-icons/fa';
-import { IconType } from 'react-icons/lib';
 
 const About: React.FC = () => {
   const fadeInUp = {
@@ -22,14 +20,50 @@ const About: React.FC = () => {
   };
 
   const copyEmailToClipboard = () => {
-    navigator.clipboard.writeText('lee.sanggean@gmail.com').then(() => {
-      toast.success('Email copied to clipboard!', {
-        position: 'bottom-right',
-        duration: 3000,
-      });
-    }).catch(() => {
-      toast.error('Failed to copy email.');
-    });
+    const email = 'lee.sanggean@gmail.com';
+    console.log('Attempting to copy email:', email); // Debug log
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      console.log('Using navigator.clipboard');
+      navigator.clipboard
+        .writeText(email)
+        .then(() => {
+          console.log('Copy successful');
+          toast.success('Email copied to clipboard!'); // Default style
+        })
+        .catch((err) => {
+          console.error('Copy failed:', err);
+          toast.error('Failed to copy email.'); // Default style
+        });
+    } else {
+      console.log('Falling back to execCommand');
+      const input = document.createElement('input');
+      input.value = email;
+      input.style.position = 'fixed';
+      input.style.opacity = '0';
+      document.body.appendChild(input);
+      input.select();
+      try {
+        const result = document.execCommand('copy');
+        console.log('execCommand result:', result);
+        if (result) {
+          toast.success('Email copied to clipboard!'); // Default style
+        } else {
+          throw new Error('execCommand failed');
+        }
+      } catch (err) {
+        console.error('Fallback copy failed:', err);
+        toast.error('Clipboard not supported in this browser.'); // Align with Footer
+      } finally {
+        document.body.removeChild(input);
+      }
+    }
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLButtonElement>) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      copyEmailToClipboard();
+    }
   };
 
   return (
@@ -45,6 +79,10 @@ const About: React.FC = () => {
           property="og:description"
           content="Learn more about Sangjin Lee, a creative architect and digital strategist."
         />
+        <meta property="og:type" content="website" />
+        <meta property="og:image" content="/images/og/about-og-image.png" />
+        <meta property="og:url" content="https://sjlee.co.kr/about" />
+        <meta name="twitter:card" content="summary_large_image" />
       </Helmet>
       <div className="pt-24 px-4 sm:px-6 lg:px-8 min-h-screen bg-gradient-to-b from-gray-50 to-white">
         <div className="max-w-4xl mx-auto">
@@ -64,7 +102,10 @@ const About: React.FC = () => {
             className="space-y-16"
           >
             {/* Intro Section */}
-            <motion.section variants={fadeInUp} className="bg-white rounded-xl shadow-lg p-6 sm:p-10">
+            <motion.section
+              variants={fadeInUp}
+              className="bg-white rounded-xl shadow-lg p-6 sm:p-10"
+            >
               <div className="relative">
                 <div className="text-6xl text-gray-200 font-serif mb-4 select-none">“</div>
                 <h2 className="text-2xl sm:text-3xl font-light tracking-tight text-gray-800 mb-4">
@@ -99,7 +140,7 @@ const About: React.FC = () => {
               </h3>
               <div className="flex items-center space-x-4 text-gray-600 text-base sm:text-lg leading-loose">
                 <p>
-                  Email:{" "}
+                  Email:{' '}
                   <a
                     href="mailto:lee.sanggean@gmail.com"
                     className="text-gray-500 hover:text-gray-800 transition-colors duration-200"
@@ -109,10 +150,24 @@ const About: React.FC = () => {
                 </p>
                 <button
                   onClick={copyEmailToClipboard}
-                  className="text-gray-500 hover:text-gray-800 transition-colors"
+                  onKeyDown={handleKeyDown}
+                  className="text-gray-500 hover:text-blue-500 transition-colors"
                   aria-label="Copy email"
                 >
-                  {(FaCopy as IconType)({ className: "w-5 h-5" })}
+                  <svg
+                    className="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth="2"
+                      d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"
+                    />
+                  </svg>
                 </button>
               </div>
             </motion.section>
@@ -288,7 +343,7 @@ const About: React.FC = () => {
                     <div className="md:w-1/3 text-right text-gray-400 italic text-sm md:pl-4 md:border-l md:border-gray-200">
                       July 2013 – Sept. 2013
                       <br />
-                      Suwon, Korea
+                      Suwon, South Korea
                     </div>
                   </div>
                 </li>
@@ -330,7 +385,7 @@ const About: React.FC = () => {
                     <div className="md:w-1/3 text-right text-gray-400 italic text-sm md:pl-4 md:border-l md:border-gray-200">
                       Mar. 2009 – Dec. 2010
                       <br />
-                      Seoul, Korea
+                      Seoul, South Korea
                     </div>
                   </div>
                 </li>
@@ -416,6 +471,8 @@ const About: React.FC = () => {
                 </div>
                 <div className="md:w-1/3 text-right text-gray-400 italic text-sm md:pl-4 md:border-l md:border-gray-200">
                   Feb. 2005 – Feb. 2007
+                  <br />
+                  South Korea
                 </div>
               </div>
             </motion.section>
@@ -451,7 +508,7 @@ const About: React.FC = () => {
                       </p>
                     </div>
                     <div className="md:w-1/3 text-right text-gray-400 italic text-sm md:pl-4 md:border-l md:border-gray-200">
-                      Jul. 2007 – Jul. 2007
+                      Jul. 2007
                       <br />
                       Yanbian, China
                     </div>
@@ -462,14 +519,14 @@ const About: React.FC = () => {
                     <div className="md:w-2/3">
                       <p className="text-gray-700 text-base leading-loose">
                         <span className="text-red-500 mr-2">•</span>
-                        Worldwide talented training program held by Architectural Technology
+                        Worldwide Talented Training Program - Architectural Technology
                         Education Centre
                       </p>
                     </div>
                     <div className="md:w-1/3 text-right text-gray-400 italic text-sm md:pl-4 md:border-l md:border-gray-200">
                       Mar. 2012 – May 2012
                       <br />
-                      Seoul, Korea
+                      Seoul, South Korea
                     </div>
                   </div>
                 </li>
@@ -488,7 +545,7 @@ const About: React.FC = () => {
                 </li>
                 <li className="text-gray-700 text-base leading-loose">
                   <span className="text-red-500 mr-2">•</span>
-                  Korean Architecture Award of Chungnam province (Entry Prize), 2008
+                  Korean Architecture Award of Chungnam Province (Entry Prize), 2008
                 </li>
                 <li className="text-gray-700 text-base leading-loose">
                   <span className="text-red-500 mr-2">•</span>
@@ -500,7 +557,7 @@ const About: React.FC = () => {
                 </li>
                 <li className="text-gray-700 text-base leading-loose">
                   <span className="text-red-500 mr-2">•</span>
-                  Korean Architecture Award of Pyeongtaek province (3rd Prize), 2004
+                  Korean Architecture Award of Pyeongtaek Province (3rd Prize), 2004
                 </li>
               </ul>
             </motion.section>
@@ -511,27 +568,35 @@ const About: React.FC = () => {
                 Language
               </h3>
               <p className="text-gray-700 text-base leading-loose">
-                Korean (native), English (working proficiency)
+                Korean (Native), English (Working Proficiency)
               </p>
             </motion.section>
 
             {/* Publication and Thesis Section */}
             <motion.section variants={fadeInUp}>
               <h3 className="text-sm font-bold uppercase tracking-widest text-gray-600 mb-6">
-                Publication and Thesis
+                Publications and Theses
               </h3>
-              <motion.section variants={fadeInUp}>
-                <ul className="space-y-4">
-                  <li className="text-gray-700 text-sm sm:text-base leading-relaxed font-serif">
-                    <span className="text-red-500 mr-2">•</span>
-                    Sangjin Lee, Yeonghwan Lim. 2010. <span className="italic">'The Recovery of "Placeness" in school-buildings</span>. Conference on Architectural Institute of Korea.
-                  </li>
-                  <li className="text-gray-700 text-sm sm:text-base leading-relaxed font-serif">
-                    <span className="text-red-500 mr-2">•</span>
-                    Sangjin Lee, Joseph Doyle. 2020. <span className="italic">Evaluating the effectiveness of a customised e-learning platform for online group study</span>. The MSc projects 2019/2020 within the School of Electronic Engineering and Computer Science at Queen Mary University of London.
-                  </li>
-                </ul>
-              </motion.section>
+              <ul className="space-y-4">
+                <li className="text-gray-700 text-sm sm:text-base leading-relaxed font-serif">
+                  <span className="text-red-500 mr-2">•</span>
+                  Sangjin Lee, Yeonghwan Lim. 2010.{' '}
+                  <span className="italic">
+                    The Recovery of "Placeness" in School Buildings
+                  </span>
+                  . Conference on Architectural Institute of Korea.
+                </li>
+                <li className="text-gray-700 text-sm sm:text-base leading-relaxed font-serif">
+                  <span className="text-red-500 mr-2">•</span>
+                  Sangjin Lee, Joseph Doyle. 2020.{' '}
+                  <span className="italic">
+                    Evaluating the Effectiveness of a Customized E-Learning Platform for Online
+                    Group Study
+                  </span>
+                  . MSc Projects 2019/2020, School of Electronic Engineering and Computer
+                  Science, Queen Mary University of London.
+                </li>
+              </ul>
             </motion.section>
 
             {/* Interests Section */}
