@@ -17,18 +17,41 @@ const ProjectDetail: React.FC = () => {
 
   const project = projects.find(p => p.id === Number(id)) as Project | undefined;
 
-  // 이미지 경로를 WebP로 변경하고 모든 이미지를 하나의 배열로 합치기
+  // ✅ 연도 기준 내림차순 정렬된 배열 사용
+  const sortedProjects = useMemo(() => 
+    [...projects]
+      .filter((p) => !p.isStudent)
+      .sort((a, b) => Number(b.date) - Number(a.date))
+  , [projects]);
+
+  const currentIndex = sortedProjects.findIndex(p => p.id === Number(id));
+  const prevProject = currentIndex > 0 ? sortedProjects[currentIndex - 1] : null;
+  const nextProject = currentIndex < sortedProjects.length - 1 ? sortedProjects[currentIndex + 1] : null;
+
+  // 이미지 배열 생성
   const allImages = useMemo(() => {
     if (!project) return [];
     
-    const mainImage = project.image.replace(/\.(png|jpg|jpeg)$/i, '.webp');
-    const additionalImages = project.additionalImages?.map(img => 
-      img.replace(/\.(png|jpg|jpeg)$/i, '.webp')
-    ) || [];
+    // ID 16번 프로젝트는 메인 이미지만 보여줌
+    if (project.id === 16) {
+      return [project.image];
+    }
 
-    return project.isComputer 
-      ? [mainImage, ...additionalImages]  // 코드 프로젝트는 메인 이미지 먼저
-      : [...additionalImages, mainImage]; // 디자인 프로젝트는 추가 이미지 먼저
+    if (project.additionalImages) {
+      // 디자인 프로젝트인 경우 (id가 1-11인 경우) 첫 번째 이미지를 첫 번째로, 메인 이미지를 두 번째로 배치
+      if (project.id >= 1 && project.id <= 11) {
+        const [first, ...rest] = project.additionalImages;
+        const images = [];
+        if (first) images.push(first);
+        images.push(project.image);
+        if (rest.length > 0) images.push(...rest);
+        return images;
+      } else {
+        // 다른 프로젝트들은 메인 이미지를 첫 번째로, 나머지는 순서대로
+        return [project.image, ...project.additionalImages];
+      }
+    }
+    return [project.image];
   }, [project]);
 
   // 스와이프 핸들러
@@ -99,15 +122,6 @@ const ProjectDetail: React.FC = () => {
     hidden: { opacity: 0, y: 20 },
     visible: { opacity: 1, y: 0 },
   };
-
-  // ✅ 연도 기준 내림차순 정렬된 배열 사용
-  const sortedProjects = [...projects]
-    .filter((p) => !p.isStudent)
-    .sort((a, b) => Number(b.date) - Number(a.date));
-
-  const currentIndex = sortedProjects.findIndex(p => p.id === Number(id));
-  const prevProject = currentIndex > 0 ? sortedProjects[currentIndex - 1] : null;
-  const nextProject = currentIndex < sortedProjects.length - 1 ? sortedProjects[currentIndex + 1] : null;
 
   return (
     <>
@@ -203,48 +217,50 @@ const ProjectDetail: React.FC = () => {
             </motion.div>
           )}
 
-          {/* Navigation */}
-          <motion.div
-            initial="hidden"
-            animate="visible"
-            variants={fadeInUp}
-            className="flex justify-between items-center mt-16 pt-10 border-t border-gray-200"
-          >
-            {prevProject ? (
-              <button
-                onClick={() =>
-                  navigate(
-                    prevProject.isComputer
-                      ? `/portfolio/code/${prevProject.id}`
-                      : `/portfolio/arch-pro/${prevProject.id}`
-                  )
-                }
-                className="flex items-center text-gray-600 hover:text-gray-800"
-              >
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
-                </svg>
-                Previous
-              </button>
-            ) : <div />}
-            {nextProject ? (
-              <button
-                onClick={() =>
-                  navigate(
-                    nextProject.isComputer
-                      ? `/portfolio/code/${nextProject.id}`
-                      : `/portfolio/arch-pro/${nextProject.id}`
-                  )
-                }
-                className="flex items-center text-gray-600 hover:text-gray-800"
-              >
-                Next
-                <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-                </svg>
-              </button>
-            ) : <div />}
-          </motion.div>
+          {/* Navigation - ID 16번 프로젝트는 네비게이션 숨김 */}
+          {project.id !== 16 && (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeInUp}
+              className="flex justify-between items-center mt-16 pt-10 border-t border-gray-200"
+            >
+              {prevProject ? (
+                <button
+                  onClick={() =>
+                    navigate(
+                      prevProject.isComputer
+                        ? `/portfolio/code/${prevProject.id}`
+                        : `/portfolio/arch-pro/${prevProject.id}`
+                    )
+                  }
+                  className="flex items-center text-gray-600 hover:text-gray-800"
+                >
+                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+                  </svg>
+                  Previous
+                </button>
+              ) : <div />}
+              {nextProject ? (
+                <button
+                  onClick={() =>
+                    navigate(
+                      nextProject.isComputer
+                        ? `/portfolio/code/${nextProject.id}`
+                        : `/portfolio/arch-pro/${nextProject.id}`
+                    )
+                  }
+                  className="flex items-center text-gray-600 hover:text-gray-800"
+                >
+                  Next
+                  <svg className="w-5 h-5 ml-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                  </svg>
+                </button>
+              ) : <div />}
+            </motion.div>
+          )}
 
           {/* Image Modal */}
           {isOpen && (
