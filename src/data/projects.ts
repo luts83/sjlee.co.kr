@@ -440,7 +440,7 @@ export const projects: Project[] = [
       </div>
     `,
     image: "/images/optimized-images/data-analysis/email-dashboard/01.webp",
-    imageFiles: ["01.png"],
+    imageFiles: ["01.webp"],
     tags: [
       "Email Marketing", "Newsletter", "Open Rate", "Click Rate",
       "Engagement", "Subscriber Growth", "Dashboard", "Data Visualization"

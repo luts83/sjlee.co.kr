@@ -21,3 +21,14 @@
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# IDE
+.idea/
+.vscode/
+
+# Backup files
+*.backup
+Archive.zip
+
+# Optimized images
+/public/images/optimized-images/
